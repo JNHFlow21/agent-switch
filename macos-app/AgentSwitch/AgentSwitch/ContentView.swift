@@ -25,9 +25,6 @@ struct ContentView: View {
             }
         }
         .navigationSplitViewStyle(.balanced)
-        .task {
-            await appState.refresh()
-        }
         .toolbar {
             ToolbarItemGroup {
                 if appState.isLoading {

@@ -20,6 +20,7 @@
 		A1000001000000000000000B /* SecretsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000B; };
 		A1000001000000000000000C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000C; };
 		A1000001000000000000000D /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D; };
+		A1000001000000000000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,7 +37,8 @@
 		A2000001000000000000000B /* SecretsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecretsView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000D /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
-		A30000010000000000000001 /* AgentSwitch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AgentSwitch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A2000001000000000000000E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A30000010000000000000001 /* Agent Switch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Agent Switch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -51,7 +53,7 @@
 		A40000010000000000000099 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A30000010000000000000001 /* AgentSwitch.app */,
+				A30000010000000000000001 /* Agent Switch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -168,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				A2000001000000000000000D /* L10n.swift */,
+				A2000001000000000000000E /* Assets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -180,6 +183,7 @@
 			buildConfigurationList = A70000010000000000000001 /* Build configuration list for PBXNativeTarget "AgentSwitch" */;
 			buildPhases = (
 				A60000010000000000000001 /* Sources */,
+				A60000010000000000000002 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -187,7 +191,7 @@
 			);
 			name = AgentSwitch;
 			productName = AgentSwitch;
-			productReference = A30000010000000000000001 /* AgentSwitch.app */;
+			productReference = A30000010000000000000001 /* Agent Switch.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -217,6 +221,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A60000010000000000000002 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A1000001000000000000000E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		A60000010000000000000001 /* Sources */ = {
@@ -309,7 +324,7 @@
 				);
 				MARKETING_VERSION = 0.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jnhflow.AgentSwitch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Agent Switch";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
@@ -334,7 +349,7 @@
 				);
 				MARKETING_VERSION = 0.1.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jnhflow.AgentSwitch;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Agent Switch";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};

@@ -1,63 +1,77 @@
 // [INPUT]: AppKit lifecycle, SwiftUI content, AppState, L10n
-// [OUTPUT]: macOS app entry point with a guaranteed main window and menu commands
+// [OUTPUT]: macOS app entry point with one stable registered application window
 // [POS]: Root app lifecycle; owns window creation and menu structure
 // [PROTOCOL]: When this file changes, update this header, then check CLAUDE.md
 
-import SwiftUI
 import AppKit
+import SwiftUI
 
 @MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     private let appState = AppState()
-    private var window: NSWindow?
+    private var windowController: NSWindowController?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
         configureMenu()
-        DispatchQueue.main.async { [weak self] in
-            self?.openMainWindow()
-            NSApp.activate(ignoringOtherApps: true)
-        }
+        showMainWindow()
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        if !flag {
-            openMainWindow()
-        }
+        showMainWindow()
         return true
     }
 
     func applicationDidBecomeActive(_ notification: Notification) {
-        openMainWindow()
+        showMainWindow()
     }
 
-    private func openMainWindow() {
-        if let window {
+    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+        false
+    }
+
+    private func showMainWindow() {
+        if let window = windowController?.window {
+            placeWindowIfNeeded(window)
             window.makeKeyAndOrderFront(nil)
-            window.orderFrontRegardless()
-            NSRunningApplication.current.activate(options: [.activateAllWindows])
+            NSApp.activate(ignoringOtherApps: true)
             return
         }
 
-        let rootView = NSHostingController(
+        let controller = NSHostingController(
             rootView:
-            ContentView()
+                ContentView()
                 .environmentObject(appState)
                 .frame(minWidth: 820, minHeight: 560)
         )
-
-        let window = NSWindow(contentViewController: rootView)
+        let window = NSWindow(contentViewController: controller)
         window.title = L10n.appName
-        window.setContentSize(NSSize(width: 1080, height: 760))
-        window.minSize = NSSize(width: 820, height: 560)
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
-        window.titlebarAppearsTransparent = false
+        window.minSize = NSSize(width: 820, height: 560)
         window.isReleasedWhenClosed = false
-        window.center()
-        window.makeKeyAndOrderFront(nil)
-        window.orderFrontRegardless()
-        self.window = window
-        NSRunningApplication.current.activate(options: [.activateAllWindows])
+        placeWindowIfNeeded(window)
+
+        let windowController = NSWindowController(window: window)
+        self.windowController = windowController
+        windowController.showWindow(nil)
+        NSApp.activate(ignoringOtherApps: true)
+    }
+
+    private func placeWindowIfNeeded(_ window: NSWindow) {
+        let visibleFrame = NSScreen.main?.visibleFrame ?? NSRect(x: 80, y: 80, width: 1440, height: 900)
+        let targetSize = NSSize(width: min(1180, visibleFrame.width - 80), height: min(820, visibleFrame.height - 80))
+        let targetOrigin = NSPoint(
+            x: visibleFrame.minX + max((visibleFrame.width - targetSize.width) / 2, 40),
+            y: visibleFrame.minY + max((visibleFrame.height - targetSize.height) / 2, 40)
+        )
+        let targetFrame = NSRect(origin: targetOrigin, size: targetSize)
+        if !visibleFrame.intersects(window.frame) || window.frame.width < 820 || window.frame.height < 560 {
+            window.setFrame(targetFrame, display: true)
+        } else if window.frame.origin.y > visibleFrame.maxY || window.frame.origin.y < visibleFrame.minY - 40 {
+            window.setFrame(targetFrame, display: true)
+        } else if window.frame.origin.x > visibleFrame.maxX || window.frame.origin.x < visibleFrame.minX - 40 {
+            window.setFrame(targetFrame, display: true)
+        }
     }
 
     private func configureMenu() {
@@ -82,6 +96,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let windowMenuItem = NSMenuItem()
         let windowMenu = NSMenu(title: "Window")
+        windowMenu.addItem(menuItem(title: "Show \(L10n.appName)", action: #selector(showMainWindowFromMenu), key: "0"))
         windowMenu.addItem(NSMenuItem(title: "Minimize", action: #selector(NSWindow.miniaturize(_:)), keyEquivalent: "m"))
         windowMenuItem.submenu = windowMenu
         mainMenu.addItem(windowMenuItem)
@@ -94,6 +109,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let item = NSMenuItem(title: title, action: action, keyEquivalent: key)
         item.target = self
         return item
+    }
+
+    @objc private func showMainWindowFromMenu() {
+        showMainWindow()
     }
 
     @objc private func runDoctor() {
