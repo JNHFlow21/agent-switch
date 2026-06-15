@@ -11,6 +11,17 @@ def render_wrapper_script(tool: ToolSpec, secret_file: str) -> str:
     env_lines = "\n".join(f"export {shlex.quote(key)}={shlex.quote(value)}" for key, value in sorted(tool.env.items()))
     if env_lines:
         env_lines += "\n"
+    if tool.required_secrets:
+        secret_check = f"""declare -a required=({required})
+missing=()
+for name in "${{required[@]}}"; do
+  if [ -z "${{!name:-}}" ]; then
+    missing+=("$name")
+  fi
+done
+"""
+    else:
+        secret_check = "missing=()\n"
     return f"""#!/usr/bin/env bash
 set -euo pipefail
 
@@ -22,14 +33,7 @@ if [ -f "$SECRET_FILE" ]; then
   set +a
 fi
 
-{env_lines}required=({required})
-missing=()
-for name in "${{required[@]}}"; do
-  if [ -z "${{!name:-}}" ]; then
-    missing+=("$name")
-  fi
-done
-
+{env_lines}{secret_check}
 if [ "${{#missing[@]}}" -gt 0 ]; then
   printf 'Agent Switch wrapper {tool.id} missing required secret(s): %s\\n' "${{missing[*]}}" >&2
   exit 78

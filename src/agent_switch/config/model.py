@@ -144,18 +144,18 @@ def default_tools() -> tuple[ToolSpec, ...]:
         ToolSpec(
             id="agent-birdread",
             name="Birdread",
-            command="birdread-mcp",
-            required_secrets=("BIRDREAD_API_KEY",),
+            command="agent-switch-mcp-bird",
+            required_secrets=(),
             apps=apps,
-            description="Default X/Twitter single-post reader.",
+            description="Default X/Twitter single-post and thread reader backed by the local bird CLI.",
         ),
         ToolSpec(
             id="agent-xurl-fallback",
             name="Official X API fallback",
-            command="xurl-mcp",
-            required_secrets=("X_API_KEY", "X_API_SECRET", "X_ACCESS_TOKEN", "X_ACCESS_TOKEN_SECRET"),
+            command="agent-switch-mcp-xcli",
+            required_secrets=(),
             apps=apps,
-            description="Fallback X/Twitter reader route.",
+            description="Fallback X/Twitter reader route backed by the local x-cli-auth official API wrapper.",
         ),
     )
 
@@ -183,4 +183,3 @@ def validate_config(config: AgentConfig) -> None:
     ]
     if missing_routes:
         raise ConfigError(f"route references unknown tool id(s): {', '.join(sorted(missing_routes))}")
-

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import os
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -30,7 +32,26 @@ class WrapperAndSpecTests(unittest.TestCase):
     def test_wrapper_without_required_secret_uses_empty_array(self) -> None:
         tool = ToolSpec(id="agent-open", name="Open", command="tool")
         script = render_wrapper(tool, Path("/tmp/secrets.env"))
-        self.assertIn("required=()", script)
+        self.assertIn("missing=()", script)
+        self.assertNotIn("required=()", script)
+
+    def test_wrapper_without_required_secret_runs_under_nounset(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            script_path = Path(tmp) / "wrapper"
+            tool = ToolSpec(id="agent-open", name="Open", command="printf", args=("ok",))
+            script_path.write_text(render_wrapper(tool, Path(tmp) / "missing.env"))
+            script_path.chmod(0o755)
+
+            result = subprocess.run(
+                [str(script_path)],
+                capture_output=True,
+                text=True,
+                env={**os.environ, "AGENT_SWITCH_SECRETS": str(Path(tmp) / "missing.env")},
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout, "ok")
 
     def test_write_wrappers_sets_executable_bit(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
