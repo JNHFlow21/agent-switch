@@ -153,7 +153,7 @@ def default_tools() -> tuple[ToolSpec, ...]:
             id="agent-xurl-fallback",
             name="Official X API fallback",
             command="agent-switch-mcp-xcli",
-            required_secrets=(),
+            required_secrets=("X_API_KEY", "X_API_SECRET", "X_BEARER_TOKEN", "X_ACCESS_TOKEN", "X_ACCESS_TOKEN_SECRET"),
             apps=apps,
             description="Fallback X/Twitter reader route backed by the local x-cli-auth official API wrapper.",
         ),
