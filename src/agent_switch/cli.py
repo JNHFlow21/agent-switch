@@ -61,7 +61,8 @@ def cmd_dashboard(args: argparse.Namespace) -> int:
     paths, config = _load(args)
     report = run_doctor(config, paths, include_ccswitch=not args.no_ccswitch)
     output = Path(args.output)
-    result = write_if_changed(output, render_dashboard(report), backup_dir=paths.backup_dir)
+    dashboard = render_dashboard(report, config, paths, include_ccswitch=not args.no_ccswitch)
+    result = write_if_changed(output, dashboard, backup_dir=paths.backup_dir)
     sys.stdout.write(str(result.path) + "\n")
     return 0
 
@@ -121,4 +122,3 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as exc:  # noqa: BLE001 - CLI boundary.
         sys.stderr.write(f"agent-switch: {exc}\n")
         return 2
-
