@@ -14,6 +14,14 @@ from agent_switch.renderers.codex import render_codex_config
 from agent_switch.renderers.hermes import render_hermes_config
 
 
+def _ccswitch_apps_match(observed, desired) -> bool:
+    return (
+        observed.claude == desired.claude
+        and observed.codex == desired.codex
+        and observed.hermes == desired.hermes
+    )
+
+
 def _read(path):
     return path.read_text(encoding="utf-8") if path.exists() else ""
 
@@ -46,9 +54,11 @@ def apply_reconcile(config: AgentConfig, paths: AgentPaths, *, include_ccswitch:
         db = CcSwitchDb(paths.ccswitch_db)
         rows = db.list_mcp_servers()
         for tool in config.tools:
+            if not (tool.apps.claude or tool.apps.codex or tool.apps.hermes):
+                continue
             desired = mcp_spec_for_tool(tool, paths.wrapper_dir)
             row = rows.get(tool.id)
-            if row is None or row.server_config != desired or row.apps != tool.apps:
+            if row is None or row.server_config != desired or not _ccswitch_apps_match(row.apps, tool.apps):
                 db.upsert_agent_mcp_server(tool.id, tool.name, desired, tool.apps)
                 changed += 1
             else:

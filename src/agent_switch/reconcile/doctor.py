@@ -23,6 +23,14 @@ from agent_switch.security.secrets import SecretReport, check_secrets
 Renderer = Callable[[str, dict[str, dict[str, object]]], str]
 
 
+def _ccswitch_apps_match(observed, desired) -> bool:
+    return (
+        observed.claude == desired.claude
+        and observed.codex == desired.codex
+        and observed.hermes == desired.hermes
+    )
+
+
 @dataclass(frozen=True)
 class DoctorFinding:
     severity: str
@@ -118,9 +126,11 @@ def run_doctor(config: AgentConfig, paths: AgentPaths, *, include_ccswitch: bool
             try:
                 rows = db.list_mcp_servers()
                 for tool in config.tools:
+                    if not (tool.apps.claude or tool.apps.codex or tool.apps.hermes):
+                        continue
                     desired = mcp_spec_for_tool(tool, paths.wrapper_dir)
                     row = rows.get(tool.id)
-                    if row is None or row.server_config != desired or row.apps != tool.apps:
+                    if row is None or row.server_config != desired or not _ccswitch_apps_match(row.apps, tool.apps):
                         changes.append(PlanChange("ccswitch", paths.ccswitch_db, "upsert", f"mirror MCP row {tool.id}"))
             except (CcSwitchDataError, CcSwitchSchemaError, OSError) as exc:
                 findings.append(DoctorFinding("error", "ccswitch", str(exc)))

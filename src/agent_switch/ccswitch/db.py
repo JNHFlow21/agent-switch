@@ -91,7 +91,12 @@ class CcSwitchDb:
                 id=row[0],
                 name=row[1],
                 server_config=server_config,
-                apps=ManagedApps(claude=bool(row[3]), codex=bool(row[4]), hermes=bool(row[5])),
+                apps=ManagedApps(
+                    claude=bool(row[3]),
+                    claude_desktop=False,
+                    codex=bool(row[4]),
+                    hermes=bool(row[5]),
+                ),
             )
         return result
 
