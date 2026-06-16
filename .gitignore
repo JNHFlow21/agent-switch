@@ -8,5 +8,6 @@ __pycache__/
 .build/
 dist/
 build/
+.firecrawl/
 *.egg-info/
 .coverage

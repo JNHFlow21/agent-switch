@@ -142,6 +142,15 @@ def default_tools() -> tuple[ToolSpec, ...]:
             description="Default public web research and scraping route.",
         ),
         ToolSpec(
+            id="agent-firecrawl",
+            name="Firecrawl",
+            command="npx",
+            args=("-y", "firecrawl-mcp"),
+            required_secrets=("FIRECRAWL_API_KEY",),
+            apps=apps,
+            description="Firecrawl search, scrape, crawl, parse, and browser interaction MCP route.",
+        ),
+        ToolSpec(
             id="agent-birdread",
             name="Birdread",
             command="agent-switch-mcp-bird",
