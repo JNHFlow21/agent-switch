@@ -39,6 +39,13 @@ class RendererTests(unittest.TestCase):
         self.assertEqual(parsed["mcp_servers"]["agent-xcrawl"]["command"], "/tmp/mcp-xcrawl")
         self.assertEqual(render_codex_config(rendered, DESIRED), rendered)
 
+    def test_codex_sets_global_instruction_file(self) -> None:
+        current = 'model = "gpt-5"\n\n[mcp_servers.playwright]\ncommand = "pw"\n'
+        rendered = render_codex_config(current, DESIRED, "/tmp/agent-switch/AGENTS.md")
+        parsed = tomllib.loads(rendered)
+        self.assertEqual(parsed["model_instructions_file"], "/tmp/agent-switch/AGENTS.md")
+        self.assertEqual(render_codex_config(rendered, DESIRED, "/tmp/agent-switch/AGENTS.md"), rendered)
+
     def test_hermes_replaces_only_agent_entries(self) -> None:
         current = 'model: old\nmcp_servers:\n  # keep this note\n  tavily:\n    command: "tavily"\n  agent-old:\n    command: "old"\n'
         rendered = render_hermes_config(current, DESIRED)

@@ -2,8 +2,11 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 from pathlib import Path
+import re
 
 from agent_switch.config.model import AgentConfig
+
+SECRET_NAME_RE = re.compile(r"^[A-Z][A-Z0-9_]*$")
 
 
 @dataclass(frozen=True)
@@ -47,6 +50,56 @@ def read_env_file(path: str | Path) -> dict[str, str]:
     return values
 
 
+def _quote_env_value(value: str) -> str:
+    if re.fullmatch(r"[A-Za-z0-9_./:@%+=,\-]+", value):
+        return value
+    escaped = value.replace("\\", "\\\\").replace('"', '\\"').replace("$", "\\$").replace("`", "\\`")
+    return f'"{escaped}"'
+
+
+def _line_key(line: str) -> str | None:
+    stripped = line.strip()
+    if not stripped or stripped.startswith("#"):
+        return None
+    if stripped.startswith("export "):
+        stripped = stripped[len("export ") :].strip()
+    if "=" not in stripped:
+        return None
+    key = stripped.split("=", 1)[0].strip()
+    return key if SECRET_NAME_RE.fullmatch(key) else None
+
+
+def set_secret(path: str | Path, name: str, value: str) -> None:
+    if not SECRET_NAME_RE.fullmatch(name):
+        raise ValueError(f"invalid secret name: {name}")
+    secret_path = Path(path)
+    secret_path.parent.mkdir(parents=True, exist_ok=True)
+    lines = secret_path.read_text(encoding="utf-8").splitlines() if secret_path.exists() else []
+    rendered = f"{name}={_quote_env_value(value)}"
+    replaced = False
+    output: list[str] = []
+    for line in lines:
+        if _line_key(line) == name:
+            output.append(rendered)
+            replaced = True
+        else:
+            output.append(line)
+    if not replaced:
+        if output and output[-1].strip():
+            output.append("")
+        output.append(rendered)
+    secret_path.write_text("\n".join(output).rstrip() + "\n", encoding="utf-8")
+    try:
+        secret_path.chmod(0o600)
+    except PermissionError:
+        pass
+
+
+def list_secret_names(path: str | Path) -> tuple[str, ...]:
+    values = read_env_file(path)
+    return tuple(sorted(name for name, value in values.items() if value))
+
+
 def check_secrets(config: AgentConfig) -> SecretReport:
     required = tuple(sorted({name for tool in config.tools for name in tool.required_secrets}))
     values = read_env_file(config.secret_file)
@@ -59,4 +112,3 @@ def check_secrets(config: AgentConfig) -> SecretReport:
         missing=missing,
         present_names=present,
     )
-

@@ -11,6 +11,7 @@ from agent_switch.config.loader import load_config, render_default_config
 from agent_switch.paths import paths_for
 from agent_switch.reconcile.apply import apply_reconcile
 from agent_switch.reconcile.doctor import run_doctor
+from agent_switch.security.secrets import list_secret_names, set_secret
 from agent_switch.status.dashboard import render_dashboard
 from agent_switch.status.report import human_report
 
@@ -74,6 +75,24 @@ def cmd_write_default_config(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_secret_set(args: argparse.Namespace) -> int:
+    paths, _config = _load(args)
+    set_secret(paths.secrets_file, args.name, args.value)
+    sys.stdout.write(f"set {args.name} in {paths.secrets_file}\n")
+    return 0
+
+
+def cmd_secret_list(args: argparse.Namespace) -> int:
+    paths, _config = _load(args)
+    names = list_secret_names(paths.secrets_file)
+    if args.json:
+        sys.stdout.write(json.dumps({"path": str(paths.secrets_file), "names": list(names)}, ensure_ascii=False, indent=2) + "\n")
+    else:
+        for name in names:
+            sys.stdout.write(name + "\n")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="agent-switch")
     parser.add_argument("--home", help="Agent Switch home directory")
@@ -111,6 +130,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     defaults = sub.add_parser("write-default-config")
     defaults.set_defaults(func=cmd_write_default_config)
+
+    secret = sub.add_parser("secret")
+    secret_sub = secret.add_subparsers(dest="secret_command", required=True)
+    secret_set = secret_sub.add_parser("set")
+    secret_set.add_argument("name")
+    secret_set.add_argument("value")
+    secret_set.set_defaults(func=cmd_secret_set)
+    secret_list = secret_sub.add_parser("list")
+    secret_list.add_argument("--json", action="store_true")
+    secret_list.set_defaults(func=cmd_secret_list)
     return parser
 
 

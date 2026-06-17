@@ -10,14 +10,20 @@ class AgentPaths:
     agent_home: Path
     config_file: Path
     secrets_file: Path
+    instructions_dir: Path
+    codex_instructions: Path
+    claude_instructions: Path
+    hermes_instructions: Path
     wrapper_dir: Path
     backup_dir: Path
     state_db: Path
     ccswitch_db: Path
     claude_config: Path
+    claude_global_instructions: Path
     claude_desktop_config: Path
     codex_config: Path
     hermes_config: Path
+    hermes_soul: Path
 
 
 def default_agent_home() -> Path:
@@ -34,11 +40,16 @@ def paths_for(agent_home: str | Path | None = None, user_home: str | Path | None
         agent_home=home,
         config_file=home / "config.json",
         secrets_file=home / "secrets.env",
+        instructions_dir=home / "instructions",
+        codex_instructions=home / "instructions" / "AGENTS.md",
+        claude_instructions=home / "instructions" / "CLAUDE.md",
+        hermes_instructions=home / "instructions" / "HERMES.md",
         wrapper_dir=home / "mcp" / "bin",
         backup_dir=home / "backups",
         state_db=home / "state.sqlite3",
         ccswitch_db=user / ".cc-switch" / "cc-switch.db",
         claude_config=user / ".claude.json",
+        claude_global_instructions=user / ".claude" / "CLAUDE.md",
         claude_desktop_config=user
         / "Library"
         / "Application Support"
@@ -46,6 +57,7 @@ def paths_for(agent_home: str | Path | None = None, user_home: str | Path | None
         / "claude_desktop_config.json",
         codex_config=user / ".codex" / "config.toml",
         hermes_config=user / ".hermes" / "config.yaml",
+        hermes_soul=user / ".hermes" / "SOUL.md",
     )
 
 
@@ -56,4 +68,3 @@ def ensure_private_dir(path: Path) -> None:
     except PermissionError:
         # The caller will surface write failures later; chmod can fail on mounted stores.
         pass
-

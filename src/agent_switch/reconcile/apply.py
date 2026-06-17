@@ -3,6 +3,7 @@ from __future__ import annotations
 from agent_switch.atomic import write_if_changed
 from agent_switch.ccswitch.db import CcSwitchDb
 from agent_switch.config.model import AgentConfig
+from agent_switch.instructions import write_instructions
 from agent_switch.mcp.specs import desired_specs_for_app, mcp_spec_for_tool
 from agent_switch.mcp.wrappers import write_wrappers
 from agent_switch.paths import AgentPaths
@@ -33,6 +34,10 @@ def apply_reconcile(config: AgentConfig, paths: AgentPaths, *, include_ccswitch:
 
     changed = 0
     unchanged = 0
+    for result in write_instructions(paths):
+        changed += int(result.changed)
+        unchanged += int(not result.changed)
+
     for result in write_wrappers(config, paths):
         changed += int(result.changed)
         unchanged += int(not result.changed)
@@ -40,7 +45,7 @@ def apply_reconcile(config: AgentConfig, paths: AgentPaths, *, include_ccswitch:
     targets = (
         ("claude", paths.claude_config, render_claude_config),
         ("claude_desktop", paths.claude_desktop_config, render_claude_desktop_config),
-        ("codex", paths.codex_config, render_codex_config),
+        ("codex", paths.codex_config, lambda text, desired: render_codex_config(text, desired, paths.codex_instructions)),
         ("hermes", paths.hermes_config, render_hermes_config),
     )
     for app, path, renderer in targets:

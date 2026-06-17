@@ -25,6 +25,20 @@ class CliTests(unittest.TestCase):
             code = main(["preview", f"ccswitch://v1/import?resource=mcp&config={config}", "--json"])
         self.assertEqual(code, 0)
 
+    def test_secret_set_and_list_do_not_print_value(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                code = main(["--home", str(Path(tmp) / "agent"), "--user-home", str(Path(tmp) / "user"), "secret", "set", "EXAMPLE_API_KEY", "secret-value"])
+            self.assertEqual(code, 0)
+            self.assertNotIn("secret-value", stdout.getvalue())
+
+            stdout = io.StringIO()
+            with contextlib.redirect_stdout(stdout):
+                code = main(["--home", str(Path(tmp) / "agent"), "--user-home", str(Path(tmp) / "user"), "secret", "list"])
+            self.assertEqual(code, 0)
+            self.assertEqual(stdout.getvalue().strip(), "EXAMPLE_API_KEY")
+
 
 if __name__ == "__main__":
     unittest.main()

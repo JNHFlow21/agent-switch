@@ -7,6 +7,12 @@ from typing import Callable
 
 from agent_switch.ccswitch.db import CcSwitchDataError, CcSwitchDb, CcSwitchSchemaError
 from agent_switch.config.model import AgentConfig
+from agent_switch.instructions import (
+    claude_instructions,
+    codex_instructions,
+    hermes_instructions,
+    merge_managed_block,
+)
 from agent_switch.mcp.specs import desired_specs_for_app, mcp_spec_for_tool
 from agent_switch.mcp.wrappers import wrapper_health
 from agent_switch.paths import AgentPaths
@@ -93,6 +99,13 @@ def _check_target(
         changes.append(PlanChange(target, path, action, f"{target} agent-owned MCP projection differs"))
 
 
+def _check_text_target(target: str, path: Path, desired: str, changes: list[PlanChange]) -> None:
+    current = _read_text(path)
+    if desired != current:
+        action = "create" if not path.exists() else "update"
+        changes.append(PlanChange(target, path, action, f"{target} managed instructions differ"))
+
+
 def run_doctor(config: AgentConfig, paths: AgentPaths, *, include_ccswitch: bool = True) -> DoctorReport:
     findings: list[DoctorFinding] = []
     changes: list[PlanChange] = []
@@ -111,10 +124,26 @@ def run_doctor(config: AgentConfig, paths: AgentPaths, *, include_ccswitch: bool
         if not item.ok():
             changes.append(PlanChange("wrappers", item.path, "write", f"wrapper for {item.tool_id} is missing or not executable"))
 
+    _check_text_target("instructions.codex", paths.codex_instructions, codex_instructions(paths), changes)
+    _check_text_target("instructions.claude", paths.claude_instructions, claude_instructions(paths), changes)
+    _check_text_target("instructions.hermes", paths.hermes_instructions, hermes_instructions(paths), changes)
+    _check_text_target(
+        "instructions.claude_global",
+        paths.claude_global_instructions,
+        merge_managed_block(_read_text(paths.claude_global_instructions), claude_instructions(paths)),
+        changes,
+    )
+    _check_text_target(
+        "instructions.hermes_soul",
+        paths.hermes_soul,
+        merge_managed_block(_read_text(paths.hermes_soul), hermes_instructions(paths)),
+        changes,
+    )
+
     target_specs = {
         "claude": (paths.claude_config, render_claude_config),
         "claude_desktop": (paths.claude_desktop_config, render_claude_desktop_config),
-        "codex": (paths.codex_config, render_codex_config),
+        "codex": (paths.codex_config, lambda text, desired: render_codex_config(text, desired, paths.codex_instructions)),
         "hermes": (paths.hermes_config, render_hermes_config),
     }
     for app, (path, renderer) in target_specs.items():
