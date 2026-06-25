@@ -23,9 +23,9 @@ class InstructionTargets:
 def _core_policy(paths: AgentPaths) -> str:
     return f"""# Agent Switch Runtime Policy
 
-Agent Switch is the source of truth for local agent tools, MCP wrappers, and tool secrets on this machine.
+Agent Switch is the source of truth for local agent tools, MCP wrappers, and tool secrets on this machine. Skill Hub is the source of truth for local Skill source checkouts, version locks, and project activation profiles.
 
-Rules:
+Secret and MCP rules:
 - Store API keys, tokens, and MCP credentials only in `{paths.secrets_file}`.
 - Do not write secrets into project `.env` files, README files, native app configs, chat transcripts, shell history, or logs.
 - Use `agent-switch secret set NAME VALUE` to add or update a secret.
@@ -36,6 +36,17 @@ Rules:
 - Generated MCP entries and wrappers must stay in the `agent-*` namespace.
 - If a requested provider or tool needs a new secret, add only the secret name to config and write the value through Agent Switch.
 - Never print or paste secret values back to the user unless the user explicitly asks for a local-only diagnostic and redaction is impossible.
+
+Skill Hub rules:
+- Treat `/Users/USER/AgentWorkspace/skill-hub` as the local Skill control plane when it exists.
+- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl status` to inspect Skill source and profile state.
+- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl audit` for safe MCP / secret-name / Skill inventory reports; reports must list secret names only, never values.
+- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl sync PROFILE` to activate project-local Skills through `.agents/skills` plus Codex / Claude / Hermes bridge directories.
+- Keep third-party Skills in one checkout under Skill Hub `vendor/` and lock their commit or tag before syncing projects.
+- Keep self-authored Skills in Git-managed Skill Hub `own/` worktrees or dedicated GitHub repositories.
+- Do not run broad global installs such as `skills add ... -g --all` unless the user explicitly asks for global installation; prefer project profiles and symlinks.
+- Keep global Skills minimal. Project-specific Skills should be activated in the project, not loaded into every session.
+- Never store credentials in Skill files, Skill references, Skill scripts, registry files, lock files, or audit reports.
 """
 
 
