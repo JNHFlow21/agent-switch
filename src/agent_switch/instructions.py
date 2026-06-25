@@ -41,11 +41,13 @@ Skill Hub rules:
 - Treat `/Users/USER/AgentWorkspace/skill-hub` as the local Skill control plane when it exists.
 - Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl status` to inspect Skill source and profile state.
 - Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl audit` for safe MCP / secret-name / Skill inventory reports; reports must list secret names only, never values.
-- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl sync PROFILE` to activate project-local Skills through `.agents/skills` plus Codex / Claude / Hermes bridge directories.
+- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl profile-enable PROFILE SKILL --source SOURCE --path PATH` and `profile-disable PROFILE SKILL` to change per-project Skill activation.
+- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl sync PROFILE --prune` to activate project-local Skills through `.agents/skills` plus Codex / Claude / Hermes bridge directories and remove stale generated symlinks.
 - Keep third-party Skills in one checkout under Skill Hub `vendor/` and lock their commit or tag before syncing projects.
 - Keep self-authored Skills in Git-managed Skill Hub `own/` worktrees or dedicated GitHub repositories.
+- Do not use global Skills as the working set. `/Users/USER/.agents/skills` should stay empty/disabled unless the user explicitly requests a temporary global migration.
 - Do not run broad global installs such as `skills add ... -g --all` unless the user explicitly asks for global installation; prefer project profiles and symlinks.
-- Keep global Skills minimal. Project-specific Skills should be activated in the project, not loaded into every session.
+- If global Skills exist unexpectedly, use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl global-disable` to archive and empty the global root before continuing.
 - Never store credentials in Skill files, Skill references, Skill scripts, registry files, lock files, or audit reports.
 """
 
