@@ -16,7 +16,8 @@ class SkillHubInstructionTests(unittest.TestCase):
             self.assertIn('profile-enable PROFILE SKILL', body)
             self.assertIn('sync PROFILE --prune', body)
             self.assertIn('global-sync-official --prune', body)
-            self.assertIn('may contain only Skill Hub managed OpenAI official Skills', body)
+            self.assertIn('plus explicit `profiles/global.json` entries', body)
+            self.assertIn('explicit non-OpenAI profile entries', body)
             self.assertIn('Do not run broad global installs', body)
             self.assertIn('Never store credentials in Skill files', body)
 
