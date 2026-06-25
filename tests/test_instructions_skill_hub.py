@@ -15,8 +15,8 @@ class SkillHubInstructionTests(unittest.TestCase):
             self.assertIn('/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl status', body)
             self.assertIn('profile-enable PROFILE SKILL', body)
             self.assertIn('sync PROFILE --prune', body)
-            self.assertIn('/Users/USER/.agents/skills` should stay empty/disabled', body)
-            self.assertIn('skillctl global-disable', body)
+            self.assertIn('global-sync-official --prune', body)
+            self.assertIn('may contain only Skill Hub managed OpenAI official Skills', body)
             self.assertIn('Do not run broad global installs', body)
             self.assertIn('Never store credentials in Skill files', body)
 
