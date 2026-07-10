@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import stat
 import sys
 from pathlib import Path
 from typing import BinaryIO
@@ -13,7 +14,7 @@ from agent_switch.config.loader import load_config, render_default_config
 from agent_switch.paths import paths_for
 from agent_switch.reconcile.apply import apply_reconcile
 from agent_switch.reconcile.doctor import run_doctor
-from agent_switch.security.secrets import MAX_SECRET_BYTES, list_secret_names, set_secret
+from agent_switch.security.secrets import MAX_SECRET_BYTES, get_secret, list_secret_names, set_secret
 from agent_switch.status.dashboard import render_dashboard
 from agent_switch.status.report import human_report
 
@@ -143,6 +144,62 @@ def cmd_secret_set(args: argparse.Namespace) -> int:
     return 0
 
 
+def _same_output_target(left_fd: int, right_fd: int) -> bool:
+    try:
+        left = os.fstat(left_fd)
+        right = os.fstat(right_fd)
+    except OSError:
+        return False
+    return (
+        left.st_dev,
+        left.st_ino,
+        stat.S_IFMT(left.st_mode),
+        left.st_rdev,
+    ) == (
+        right.st_dev,
+        right.st_ino,
+        stat.S_IFMT(right.st_mode),
+        right.st_rdev,
+    )
+
+
+def _duplicate_secret_output_fd(fd: int) -> int:
+    if fd < 3:
+        raise ValueError("--fd must identify an inherited write descriptor numbered 3 or higher")
+    try:
+        duplicate = os.dup(fd)
+    except OSError as exc:
+        raise ValueError(f"unable to duplicate secret output fd {fd}: {exc.strerror or 'unavailable'}") from None
+    if os.isatty(duplicate):
+        os.close(duplicate)
+        raise ValueError(f"refusing to write a secret to TTY fd {fd}")
+    for standard_fd in (1, 2):
+        if _same_output_target(duplicate, standard_fd):
+            os.close(duplicate)
+            raise ValueError(f"refusing to write a secret through stdout or stderr alias fd {fd}")
+    return duplicate
+
+
+def _write_all(fd: int, data: bytes) -> None:
+    remaining = memoryview(data)
+    while remaining:
+        written = os.write(fd, remaining)
+        if written <= 0:
+            raise OSError("secret output fd made no write progress")
+        remaining = remaining[written:]
+
+
+def cmd_secret_get(args: argparse.Namespace) -> int:
+    output_fd = _duplicate_secret_output_fd(args.fd)
+    try:
+        paths, _config = _load(args)
+        value = get_secret(paths.secrets_file, args.name)
+        _write_all(output_fd, value.encode("utf-8", errors="strict"))
+    finally:
+        os.close(output_fd)
+    return 0
+
+
 def cmd_secret_list(args: argparse.Namespace) -> int:
     paths, _config = _load(args)
     names = list_secret_names(paths.secrets_file)
@@ -201,6 +258,10 @@ def build_parser() -> argparse.ArgumentParser:
     secret_set.add_argument("name")
     secret_set.add_argument("value", nargs="?", help=argparse.SUPPRESS)
     secret_set.set_defaults(func=cmd_secret_set)
+    secret_get = secret_sub.add_parser("get")
+    secret_get.add_argument("--fd", type=int, required=True, help="write the secret to an inherited descriptor")
+    secret_get.add_argument("name")
+    secret_get.set_defaults(func=cmd_secret_get)
     secret_list = secret_sub.add_parser("list")
     secret_list.add_argument("--json", action="store_true")
     secret_list.set_defaults(func=cmd_secret_list)

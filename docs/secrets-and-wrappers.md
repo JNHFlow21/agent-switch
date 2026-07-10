@@ -41,6 +41,7 @@ Use the CLI to add or update secrets:
 ```bash
 secret-producing-command | agent-switch secret set --stdin FIRECRAWL_API_KEY
 agent-switch secret set --fd 3 FIRECRAWL_API_KEY 3< <(secret-producing-command)
+agent-switch secret get --fd 3 FIRECRAWL_API_KEY 3> >(secret-consuming-command)
 agent-switch secret list
 ```
 
@@ -53,6 +54,11 @@ this compatibility release.
 Secret input must be non-empty, single-line UTF-8 no larger than 64 KiB. The
 CLI removes one final LF or CRLF from a producer. `--stdin` rejects interactive
 TTY input, and `--fd` accepts inherited read descriptors numbered 3 or higher.
+
+`secret get` never returns a value through stdout, stderr, argv, or the
+environment. It writes the exact UTF-8 value only to the inherited descriptor,
+which must be numbered 3 or higher and must not be a TTY or an alias of stdout
+or stderr.
 
 `secret list` prints names only. It does not print values.
 

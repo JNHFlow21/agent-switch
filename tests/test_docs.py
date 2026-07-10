@@ -20,7 +20,9 @@ class DocsTests(unittest.TestCase):
         self.assertIn("agent-switch reconcile", recovery)
         self.assertIn("secret set --stdin", secrets)
         self.assertIn("secret set --fd", secrets)
+        self.assertIn("secret get --fd", secrets)
         self.assertIn("secret set --stdin", instructions)
+        self.assertIn("secret get --fd", instructions)
         self.assertNotIn("secret set NAME VALUE` to add", instructions)
 
 

@@ -3,15 +3,17 @@ from __future__ import annotations
 import contextlib
 import io
 import os
+import pty
 import stat
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from agent_switch.cli import _read_secret_stream, main
-from agent_switch.security.secrets import MAX_SECRET_BYTES
+from agent_switch.cli import _duplicate_secret_output_fd, _read_secret_stream, _write_all, main
+from agent_switch.security.secrets import MAX_SECRET_BYTES, set_secret
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +43,15 @@ def run_cli(
 class TtyBytesIO(io.BytesIO):
     def isatty(self) -> bool:
         return True
+
+
+def read_all(fd: int) -> bytes:
+    chunks: list[bytes] = []
+    while True:
+        chunk = os.read(fd, 4096)
+        if not chunk:
+            return b"".join(chunks)
+        chunks.append(chunk)
 
 
 class CliTests(unittest.TestCase):
@@ -238,6 +249,144 @@ class CliTests(unittest.TestCase):
                 )
             self.assertEqual(code, 2)
             self.assertIn("3 or higher", stderr.getvalue())
+
+    def test_secret_get_writes_only_inherited_fd_and_round_trips_special_characters(self) -> None:
+        fixture_value = 'fixture space\\unknown "$HOME" `command` single\'quote'
+        with tempfile.TemporaryDirectory() as tmp:
+            agent_home = Path(tmp) / "agent"
+            set_secret(agent_home / "secrets.env", "GET_API_KEY", fixture_value)
+            read_fd, write_fd = os.pipe()
+            try:
+                result = run_cli(
+                    [
+                        "--home",
+                        str(agent_home),
+                        "--user-home",
+                        str(Path(tmp) / "user"),
+                        "secret",
+                        "get",
+                        "--fd",
+                        str(write_fd),
+                        "GET_API_KEY",
+                    ],
+                    pass_fds=(write_fd,),
+                )
+            finally:
+                os.close(write_fd)
+            try:
+                output = read_all(read_fd)
+            finally:
+                os.close(read_fd)
+
+            self.assertEqual(result.returncode, 0, result.stderr.decode(errors="replace"))
+            self.assertEqual(result.stdout, b"")
+            self.assertEqual(result.stderr, b"")
+            self.assertEqual(output, fixture_value.encode("utf-8"))
+
+    def test_secret_get_rejects_missing_invalid_fd_and_tty_without_leaking(self) -> None:
+        fixture_value = b"fixture-get-never-output"
+        with tempfile.TemporaryDirectory() as tmp:
+            agent_home = Path(tmp) / "agent"
+            set_secret(agent_home / "secrets.env", "PRESENT_API_KEY", fixture_value.decode())
+
+            for name in ("MISSING_API_KEY", "invalid-name"):
+                with self.subTest(name=name):
+                    read_fd, write_fd = os.pipe()
+                    try:
+                        result = run_cli(
+                            [
+                                "--home",
+                                str(agent_home),
+                                "--user-home",
+                                str(Path(tmp) / "user"),
+                                "secret",
+                                "get",
+                                "--fd",
+                                str(write_fd),
+                                name,
+                            ],
+                            pass_fds=(write_fd,),
+                        )
+                    finally:
+                        os.close(write_fd)
+                    try:
+                        self.assertEqual(read_all(read_fd), b"")
+                    finally:
+                        os.close(read_fd)
+                    self.assertEqual(result.returncode, 2)
+                    self.assertEqual(result.stdout, b"")
+                    self.assertNotIn(fixture_value, result.stderr)
+
+            for fd in (1, 2, 9999):
+                with self.subTest(fd=fd):
+                    result = run_cli(
+                        [
+                            "--home",
+                            str(agent_home),
+                            "--user-home",
+                            str(Path(tmp) / "user"),
+                            "secret",
+                            "get",
+                            "--fd",
+                            str(fd),
+                            "PRESENT_API_KEY",
+                        ]
+                    )
+                    self.assertEqual(result.returncode, 2)
+                    self.assertEqual(result.stdout, b"")
+                    self.assertNotIn(fixture_value, result.stderr)
+
+            common = ["--home", str(agent_home), "--user-home", str(Path(tmp) / "user"), "secret", "get"]
+            for suffix in (["PRESENT_API_KEY"], ["--fd", "3"]):
+                with self.subTest(missing_argument=suffix):
+                    result = run_cli([*common, *suffix])
+                    self.assertEqual(result.returncode, 2)
+                    self.assertEqual(result.stdout, b"")
+                    self.assertNotIn(fixture_value, result.stderr)
+
+            master_fd, tty_fd = pty.openpty()
+            try:
+                result = run_cli(
+                    [
+                        "--home",
+                        str(agent_home),
+                        "--user-home",
+                        str(Path(tmp) / "user"),
+                        "secret",
+                        "get",
+                        "--fd",
+                        str(tty_fd),
+                        "PRESENT_API_KEY",
+                    ],
+                    pass_fds=(tty_fd,),
+                )
+            finally:
+                os.close(tty_fd)
+                os.close(master_fd)
+            self.assertEqual(result.returncode, 2)
+            self.assertIn(b"TTY", result.stderr)
+            self.assertNotIn(fixture_value, result.stderr)
+
+    def test_secret_get_rejects_stdout_alias_and_handles_short_writes(self) -> None:
+        alias_fd = os.dup(1)
+        try:
+            with self.assertRaisesRegex(ValueError, "stdout or stderr"):
+                _duplicate_secret_output_fd(alias_fd)
+        finally:
+            os.close(alias_fd)
+
+        fixture_value = b"fixture-short-write-value"
+        written: list[bytes] = []
+
+        def short_write(_fd: int, data: bytes | memoryview) -> int:
+            chunk = bytes(data[:3])
+            written.append(chunk)
+            return len(chunk)
+
+        with patch("agent_switch.cli.os.write", side_effect=short_write) as write_mock:
+            _write_all(123, fixture_value)
+        self.assertGreater(write_mock.call_count, 1)
+        self.assertEqual(b"".join(written), fixture_value)
 
 
 if __name__ == "__main__":

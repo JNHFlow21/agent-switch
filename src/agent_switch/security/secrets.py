@@ -33,8 +33,32 @@ class SecretReport:
         }
 
 
-def read_env_file(path: str | Path) -> dict[str, str]:
-    env_path = Path(path)
+def _decode_double_quoted_value(value: str) -> str:
+    output: list[str] = []
+    index = 0
+    while index < len(value):
+        character = value[index]
+        if character == "\\" and index + 1 < len(value) and value[index + 1] in {'\\', '"', "$", "`"}:
+            output.append(value[index + 1])
+            index += 2
+            continue
+        output.append(character)
+        index += 1
+    return "".join(output)
+
+
+def _decode_env_value(raw_value: str) -> str:
+    value = raw_value.strip()
+    if value.startswith(("'", '"')):
+        if len(value) < 2 or value[-1] != value[0]:
+            raise ValueError("malformed quoted secret value")
+        if value[0] == "'":
+            return value[1:-1]
+        return _decode_double_quoted_value(value[1:-1])
+    return value
+
+
+def _read_env_file_unlocked(env_path: Path) -> dict[str, str]:
     if not env_path.exists():
         return {}
     values: dict[str, str] = {}
@@ -48,12 +72,18 @@ def read_env_file(path: str | Path) -> dict[str, str]:
             continue
         key, raw_value = line.split("=", 1)
         key = key.strip()
-        value = raw_value.strip()
-        if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
-            value = value[1:-1]
+        value = _decode_env_value(raw_value)
         if key:
             values[key] = value
     return values
+
+
+def read_env_file(path: str | Path) -> dict[str, str]:
+    env_path = Path(path)
+    if not env_path.parent.exists():
+        return {}
+    with _secret_lock(env_path, exclusive=False):
+        return _read_env_file_unlocked(env_path)
 
 
 def _quote_env_value(value: str) -> str:
@@ -96,13 +126,13 @@ def _ensure_private_directory(path: Path) -> None:
 
 
 @contextmanager
-def _secret_lock(secret_path: Path) -> Iterator[None]:
+def _secret_lock(secret_path: Path, *, exclusive: bool = True) -> Iterator[None]:
     lock_path = secret_path.with_name(f".{secret_path.name}.lock")
     lock_fd = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
     locked = False
     try:
         os.fchmod(lock_fd, 0o600)
-        fcntl.flock(lock_fd, fcntl.LOCK_EX)
+        fcntl.flock(lock_fd, fcntl.LOCK_EX if exclusive else fcntl.LOCK_SH)
         locked = True
         yield
     finally:
@@ -139,6 +169,17 @@ def set_secret(path: str | Path, name: str, value: str) -> None:
         # Atomic writes return early for identical content, so enforce the
         # private mode even when the value did not change. Fail closed.
         secret_path.chmod(0o600)
+
+
+def get_secret(path: str | Path, name: str) -> str:
+    if not SECRET_NAME_RE.fullmatch(name):
+        raise ValueError(f"invalid secret name: {name}")
+    values = read_env_file(path)
+    if name not in values:
+        raise ValueError(f"secret not found: {name}")
+    value = values[name]
+    _validate_secret_value(value)
+    return value
 
 
 def list_secret_names(path: str | Path) -> tuple[str, ...]:
