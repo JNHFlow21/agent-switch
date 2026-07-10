@@ -1,12 +1,18 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
 from dataclasses import dataclass
+import fcntl
+import os
 from pathlib import Path
 import re
+from typing import Iterator
 
+from agent_switch.atomic import write_if_changed
 from agent_switch.config.model import AgentConfig
 
 SECRET_NAME_RE = re.compile(r"^[A-Z][A-Z0-9_]*$")
+MAX_SECRET_BYTES = 64 * 1024
 
 
 @dataclass(frozen=True)
@@ -69,30 +75,70 @@ def _line_key(line: str) -> str | None:
     return key if SECRET_NAME_RE.fullmatch(key) else None
 
 
+def _validate_secret_value(value: str) -> None:
+    try:
+        encoded = value.encode("utf-8", errors="strict")
+    except UnicodeEncodeError as exc:
+        raise ValueError("secret value must be valid UTF-8") from exc
+    if not encoded:
+        raise ValueError("secret value must not be empty")
+    if b"\x00" in encoded:
+        raise ValueError("secret value must not contain NUL bytes")
+    if b"\r" in encoded or b"\n" in encoded:
+        raise ValueError("secret value must be a single line")
+    if len(encoded) > MAX_SECRET_BYTES:
+        raise ValueError(f"secret value exceeds the {MAX_SECRET_BYTES}-byte limit")
+
+
+def _ensure_private_directory(path: Path) -> None:
+    path.mkdir(mode=0o700, parents=True, exist_ok=True)
+    path.chmod(0o700)
+
+
+@contextmanager
+def _secret_lock(secret_path: Path) -> Iterator[None]:
+    lock_path = secret_path.with_name(f".{secret_path.name}.lock")
+    lock_fd = os.open(lock_path, os.O_CREAT | os.O_RDWR, 0o600)
+    locked = False
+    try:
+        os.fchmod(lock_fd, 0o600)
+        fcntl.flock(lock_fd, fcntl.LOCK_EX)
+        locked = True
+        yield
+    finally:
+        try:
+            if locked:
+                fcntl.flock(lock_fd, fcntl.LOCK_UN)
+        finally:
+            os.close(lock_fd)
+
+
 def set_secret(path: str | Path, name: str, value: str) -> None:
     if not SECRET_NAME_RE.fullmatch(name):
         raise ValueError(f"invalid secret name: {name}")
+    _validate_secret_value(value)
     secret_path = Path(path)
-    secret_path.parent.mkdir(parents=True, exist_ok=True)
-    lines = secret_path.read_text(encoding="utf-8").splitlines() if secret_path.exists() else []
-    rendered = f"{name}={_quote_env_value(value)}"
-    replaced = False
-    output: list[str] = []
-    for line in lines:
-        if _line_key(line) == name:
+    _ensure_private_directory(secret_path.parent)
+    with _secret_lock(secret_path):
+        lines = secret_path.read_text(encoding="utf-8").splitlines() if secret_path.exists() else []
+        rendered = f"{name}={_quote_env_value(value)}"
+        replaced = False
+        output: list[str] = []
+        for line in lines:
+            if _line_key(line) == name:
+                output.append(rendered)
+                replaced = True
+            else:
+                output.append(line)
+        if not replaced:
+            if output and output[-1].strip():
+                output.append("")
             output.append(rendered)
-            replaced = True
-        else:
-            output.append(line)
-    if not replaced:
-        if output and output[-1].strip():
-            output.append("")
-        output.append(rendered)
-    secret_path.write_text("\n".join(output).rstrip() + "\n", encoding="utf-8")
-    try:
+        text = "\n".join(output).rstrip() + "\n"
+        write_if_changed(secret_path, text, mode=0o600)
+        # Atomic writes return early for identical content, so enforce the
+        # private mode even when the value did not change. Fail closed.
         secret_path.chmod(0o600)
-    except PermissionError:
-        pass
 
 
 def list_secret_names(path: str | Path) -> tuple[str, ...]:

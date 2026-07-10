@@ -1,43 +1,243 @@
 from __future__ import annotations
 
-import base64
 import contextlib
 import io
-import json
+import os
+import stat
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-from agent_switch.cli import main
+from agent_switch.cli import _read_secret_stream, main
+from agent_switch.security.secrets import MAX_SECRET_BYTES
+
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def run_cli(
+    args: list[str],
+    *,
+    input_data: bytes | None = None,
+    pass_fds: tuple[int, ...] = (),
+) -> subprocess.CompletedProcess[bytes]:
+    env = os.environ.copy()
+    source_path = str(ROOT / "src")
+    env["PYTHONPATH"] = source_path + (os.pathsep + env["PYTHONPATH"] if env.get("PYTHONPATH") else "")
+    return subprocess.run(
+        [sys.executable, "-m", "agent_switch", *args],
+        cwd=ROOT,
+        env=env,
+        input=input_data,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        pass_fds=pass_fds,
+        check=False,
+    )
+
+
+class TtyBytesIO(io.BytesIO):
+    def isatty(self) -> bool:
+        return True
 
 
 class CliTests(unittest.TestCase):
     def test_doctor_json_runs_against_fixture_home(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             with contextlib.redirect_stdout(io.StringIO()):
-                code = main(["--home", str(Path(tmp) / "agent"), "--user-home", str(Path(tmp) / "user"), "doctor", "--json", "--no-ccswitch"])
+                code = main(
+                    [
+                        "--home",
+                        str(Path(tmp) / "agent"),
+                        "--user-home",
+                        str(Path(tmp) / "user"),
+                        "doctor",
+                        "--json",
+                        "--no-ccswitch",
+                    ]
+                )
             self.assertEqual(code, 0)
 
     def test_preview_json_classifies_mcp(self) -> None:
-        payload = {"mcpServers": {"xcrawl": {"command": "node", "env": {"XCRAWL_API_KEY": "secret"}}}}
+        import base64
+        import json
+
+        payload = {"mcpServers": {"xcrawl": {"command": "node", "env": {"XCRAWL_API_KEY": "fixture-value"}}}}
         config = base64.urlsafe_b64encode(json.dumps(payload).encode()).decode().rstrip("=")
         with contextlib.redirect_stdout(io.StringIO()):
             code = main(["preview", f"ccswitch://v1/import?resource=mcp&config={config}", "--json"])
         self.assertEqual(code, 0)
 
-    def test_secret_set_and_list_do_not_print_value(self) -> None:
+    def test_secret_stdin_and_list_do_not_print_value(self) -> None:
+        fixture_value = b"fixture-stdin-value"
+        with tempfile.TemporaryDirectory() as tmp:
+            agent_home = Path(tmp) / "agent"
+            agent_home.mkdir(mode=0o755)
+            args = [
+                "--home",
+                str(agent_home),
+                "--user-home",
+                str(Path(tmp) / "user"),
+                "secret",
+                "set",
+                "--stdin",
+                "EXAMPLE_API_KEY",
+            ]
+            result = run_cli(args, input_data=fixture_value + b"\r\n")
+            combined = result.stdout + result.stderr
+
+            self.assertEqual(result.returncode, 0, combined.decode(errors="replace"))
+            self.assertNotIn(fixture_value, combined)
+            self.assertNotIn(b"deprecated", result.stderr)
+            secret_file = agent_home / "secrets.env"
+            self.assertEqual(secret_file.read_bytes(), b"EXAMPLE_API_KEY=" + fixture_value + b"\n")
+            self.assertEqual(stat.S_IMODE(agent_home.stat().st_mode), 0o700)
+            self.assertEqual(stat.S_IMODE(secret_file.stat().st_mode), 0o600)
+
+            listed = run_cli([*args[:4], "secret", "list"])
+            self.assertEqual(listed.returncode, 0)
+            self.assertEqual(listed.stdout.strip(), b"EXAMPLE_API_KEY")
+            self.assertNotIn(fixture_value, listed.stdout + listed.stderr)
+
+    def test_secret_fd_reads_inherited_descriptor_without_printing_value(self) -> None:
+        fixture_value = b"fixture-fd-value"
+        with tempfile.TemporaryDirectory() as tmp:
+            read_fd, write_fd = os.pipe()
+            try:
+                os.write(write_fd, fixture_value + b"\n")
+            finally:
+                os.close(write_fd)
+            try:
+                result = run_cli(
+                    [
+                        "--home",
+                        str(Path(tmp) / "agent"),
+                        "--user-home",
+                        str(Path(tmp) / "user"),
+                        "secret",
+                        "set",
+                        "--fd",
+                        str(read_fd),
+                        "FD_API_KEY",
+                    ],
+                    pass_fds=(read_fd,),
+                )
+            finally:
+                os.close(read_fd)
+
+            combined = result.stdout + result.stderr
+            self.assertEqual(result.returncode, 0, combined.decode(errors="replace"))
+            self.assertNotIn(fixture_value, combined)
+            self.assertEqual((Path(tmp) / "agent" / "secrets.env").read_bytes(), b"FD_API_KEY=" + fixture_value + b"\n")
+
+    def test_legacy_positional_value_warns_without_leaking_value(self) -> None:
+        fixture_value = "fixture-legacy-value"
         with tempfile.TemporaryDirectory() as tmp:
             stdout = io.StringIO()
-            with contextlib.redirect_stdout(stdout):
-                code = main(["--home", str(Path(tmp) / "agent"), "--user-home", str(Path(tmp) / "user"), "secret", "set", "EXAMPLE_API_KEY", "secret-value"])
+            stderr = io.StringIO()
+            with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                code = main(
+                    [
+                        "--home",
+                        str(Path(tmp) / "agent"),
+                        "--user-home",
+                        str(Path(tmp) / "user"),
+                        "secret",
+                        "set",
+                        "LEGACY_API_KEY",
+                        fixture_value,
+                    ]
+                )
+            combined = stdout.getvalue() + stderr.getvalue()
             self.assertEqual(code, 0)
-            self.assertNotIn("secret-value", stdout.getvalue())
+            self.assertIn("deprecated", stderr.getvalue())
+            self.assertIn("0.1.3", stderr.getvalue())
+            self.assertNotIn(fixture_value, combined)
 
-            stdout = io.StringIO()
-            with contextlib.redirect_stdout(stdout):
-                code = main(["--home", str(Path(tmp) / "agent"), "--user-home", str(Path(tmp) / "user"), "secret", "list"])
-            self.assertEqual(code, 0)
-            self.assertEqual(stdout.getvalue().strip(), "EXAMPLE_API_KEY")
+    def test_secret_source_must_be_exactly_one(self) -> None:
+        fixture_value = "fixture-conflict-value"
+        with tempfile.TemporaryDirectory() as tmp:
+            common = ["--home", str(Path(tmp) / "agent"), "--user-home", str(Path(tmp) / "user"), "secret", "set"]
+            for suffix in (["NO_SOURCE_KEY"], ["--stdin", "CONFLICT_KEY", fixture_value]):
+                with self.subTest(suffix=suffix):
+                    stdout = io.StringIO()
+                    stderr = io.StringIO()
+                    with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                        code = main([*common, *suffix])
+                    combined = stdout.getvalue() + stderr.getvalue()
+                    self.assertEqual(code, 2)
+                    self.assertIn("exactly one secret source", stderr.getvalue())
+                    self.assertNotIn(fixture_value, combined)
+
+    def test_secret_stdin_rejects_invalid_inputs_without_echoing_them(self) -> None:
+        cases = {
+            "empty": (b"", None),
+            "nul": (b"fixture-nul\x00value", b"fixture-nul"),
+            "multiline": (b"fixture-line-one\nfixture-line-two", b"fixture-line-one"),
+            "invalid-utf8": (b"\xfffixture-invalid", b"fixture-invalid"),
+            "oversize": (b"fixture-oversize-" + b"x" * MAX_SECRET_BYTES, b"fixture-oversize"),
+        }
+        with tempfile.TemporaryDirectory() as tmp:
+            for label, (input_data, leak_marker) in cases.items():
+                with self.subTest(label=label):
+                    agent_home = Path(tmp) / label
+                    result = run_cli(
+                        [
+                            "--home",
+                            str(agent_home),
+                            "--user-home",
+                            str(Path(tmp) / "user"),
+                            "secret",
+                            "set",
+                            "--stdin",
+                            "REJECTED_API_KEY",
+                        ],
+                        input_data=input_data,
+                    )
+                    combined = result.stdout + result.stderr
+                    self.assertEqual(result.returncode, 2, combined.decode(errors="replace"))
+                    self.assertLess(len(combined), 1024)
+                    if leak_marker is not None:
+                        self.assertNotIn(leak_marker, combined)
+                    self.assertFalse((agent_home / "secrets.env").exists())
+
+    def test_secret_stdin_accepts_exact_64_kib_boundary(self) -> None:
+        fixture_value = b"x" * MAX_SECRET_BYTES
+        with tempfile.TemporaryDirectory() as tmp:
+            agent_home = Path(tmp) / "agent"
+            result = run_cli(
+                ["--home", str(agent_home), "--user-home", str(Path(tmp) / "user"), "secret", "set", "--stdin", "MAX_API_KEY"],
+                input_data=fixture_value + b"\n",
+            )
+            combined = result.stdout + result.stderr
+            self.assertEqual(result.returncode, 0, combined.decode(errors="replace"))
+            self.assertNotIn(fixture_value[:32], combined)
+            self.assertEqual((agent_home / "secrets.env").stat().st_size, MAX_SECRET_BYTES + len("MAX_API_KEY=\n"))
+
+    def test_secret_input_rejects_tty_and_standard_descriptors(self) -> None:
+        with self.assertRaisesRegex(ValueError, "TTY"):
+            _read_secret_stream(TtyBytesIO(b"fixture-tty-value"), "stdin")
+
+        with tempfile.TemporaryDirectory() as tmp:
+            stderr = io.StringIO()
+            with contextlib.redirect_stderr(stderr):
+                code = main(
+                    [
+                        "--home",
+                        str(Path(tmp) / "agent"),
+                        "--user-home",
+                        str(Path(tmp) / "user"),
+                        "secret",
+                        "set",
+                        "--fd",
+                        "0",
+                        "FD_ZERO_KEY",
+                    ]
+                )
+            self.assertEqual(code, 2)
+            self.assertIn("3 or higher", stderr.getvalue())
 
 
 if __name__ == "__main__":

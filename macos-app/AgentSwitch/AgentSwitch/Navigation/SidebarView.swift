@@ -57,7 +57,7 @@ struct SidebarView: View {
                         .font(DSTypography.caption)
                         .foregroundStyle(DSColor.textSecondary)
                     Spacer()
-                    Text("v0.1.2")
+                    Text("v0.1.3")
                         .font(DSTypography.caption)
                         .foregroundStyle(DSColor.textSecondary)
                 }

@@ -28,7 +28,7 @@ struct SettingsView: View {
     private var pageBadges: [DSPageBadge] {
         [
             DSPageBadge(text: L10n.ready, tone: .good),
-            DSPageBadge(text: "v0.1.2", tone: .neutral),
+            DSPageBadge(text: "v0.1.3", tone: .neutral),
         ]
     }
 
@@ -51,7 +51,7 @@ struct SettingsView: View {
             )
             DSMetricCard(
                 label: L10n.version,
-                value: "0.1.2",
+                value: "0.1.3",
                 note: "github.com/JNHFlow21/agent-switch"
             )
         }
@@ -114,7 +114,7 @@ struct SettingsView: View {
                 Text(L10n.about)
                     .font(DSTypography.heading)
 
-                DSInfoRow(label: L10n.version, value: "0.1.2")
+                DSInfoRow(label: L10n.version, value: "0.1.3")
                 Divider()
                 HStack(alignment: .firstTextBaseline, spacing: DSSpacing.lg) {
                     Text(L10n.repository)

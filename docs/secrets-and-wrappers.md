@@ -39,9 +39,20 @@ The status output reports missing secret names only. It never prints values.
 Use the CLI to add or update secrets:
 
 ```bash
-agent-switch secret set FIRECRAWL_API_KEY ...
+secret-producing-command | agent-switch secret set --stdin FIRECRAWL_API_KEY
+agent-switch secret set --fd 3 FIRECRAWL_API_KEY 3< <(secret-producing-command)
 agent-switch secret list
 ```
+
+`--stdin` and `--fd` keep the value out of the Agent Switch process arguments.
+Replace `secret-producing-command` with a program that emits the value; never
+replace that placeholder with the value itself. The legacy
+`secret set NAME VALUE` form is deprecated in 0.1.3 and will be removed after
+this compatibility release.
+
+Secret input must be non-empty, single-line UTF-8 no larger than 64 KiB. The
+CLI removes one final LF or CRLF from a producer. `--stdin` rejects interactive
+TTY input, and `--fd` accepts inherited read descriptors numbered 3 or higher.
 
 `secret list` prints names only. It does not print values.
 

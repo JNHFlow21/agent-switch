@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
+from typing import BinaryIO
 
 from agent_switch.atomic import write_if_changed
 from agent_switch.ccswitch.imports import preview_deeplink
@@ -11,7 +13,7 @@ from agent_switch.config.loader import load_config, render_default_config
 from agent_switch.paths import paths_for
 from agent_switch.reconcile.apply import apply_reconcile
 from agent_switch.reconcile.doctor import run_doctor
-from agent_switch.security.secrets import list_secret_names, set_secret
+from agent_switch.security.secrets import MAX_SECRET_BYTES, list_secret_names, set_secret
 from agent_switch.status.dashboard import render_dashboard
 from agent_switch.status.report import human_report
 
@@ -75,9 +77,68 @@ def cmd_write_default_config(args: argparse.Namespace) -> int:
     return 0
 
 
+def _read_secret_stream(stream: BinaryIO, source: str) -> str:
+    if stream.isatty():
+        raise ValueError(f"refusing to read a secret from TTY {source}; use a pipe or inherited file descriptor")
+
+    limit = MAX_SECRET_BYTES + 3  # One overflow byte plus an optional CRLF.
+    chunks: list[bytes] = []
+    remaining = limit
+    while remaining:
+        chunk = stream.read(remaining)
+        if not chunk:
+            break
+        chunks.append(chunk)
+        remaining -= len(chunk)
+    raw = b"".join(chunks)
+    if raw.endswith(b"\r\n"):
+        raw = raw[:-2]
+    elif raw.endswith(b"\n"):
+        raw = raw[:-1]
+    try:
+        return raw.decode("utf-8", errors="strict")
+    except UnicodeDecodeError as exc:
+        raise ValueError("secret input must be valid UTF-8") from exc
+
+
+def _read_secret_fd(fd: int) -> str:
+    if fd < 3:
+        raise ValueError("--fd must identify an inherited read descriptor numbered 3 or higher")
+    try:
+        duplicate = os.dup(fd)
+    except OSError as exc:
+        raise ValueError(f"unable to duplicate secret input fd {fd}: {exc.strerror or 'unavailable'}") from None
+    try:
+        with os.fdopen(duplicate, "rb") as stream:
+            return _read_secret_stream(stream, f"fd {fd}")
+    except OSError as exc:
+        raise ValueError(f"unable to read secret input fd {fd}: {exc.strerror or 'unavailable'}") from None
+
+
+def _secret_value_from_args(args: argparse.Namespace) -> str:
+    has_legacy_value = args.value is not None
+    source_count = int(has_legacy_value) + int(args.read_stdin) + int(args.fd is not None)
+    if source_count != 1:
+        raise ValueError("choose exactly one secret source: positional VALUE, --stdin, or --fd N")
+
+    if has_legacy_value:
+        sys.stderr.write(
+            "agent-switch: warning: positional secret VALUE is deprecated and will be removed after 0.1.3; "
+            "use --stdin NAME or --fd N NAME\n"
+        )
+        return args.value
+    if args.read_stdin:
+        stream = getattr(sys.stdin, "buffer", None)
+        if stream is None:
+            raise ValueError("binary stdin is unavailable; use an inherited file descriptor")
+        return _read_secret_stream(stream, "stdin")
+    return _read_secret_fd(args.fd)
+
+
 def cmd_secret_set(args: argparse.Namespace) -> int:
+    value = _secret_value_from_args(args)
     paths, _config = _load(args)
-    set_secret(paths.secrets_file, args.name, args.value)
+    set_secret(paths.secrets_file, args.name, value)
     sys.stdout.write(f"set {args.name} in {paths.secrets_file}\n")
     return 0
 
@@ -134,8 +195,11 @@ def build_parser() -> argparse.ArgumentParser:
     secret = sub.add_parser("secret")
     secret_sub = secret.add_subparsers(dest="secret_command", required=True)
     secret_set = secret_sub.add_parser("set")
+    source = secret_set.add_mutually_exclusive_group()
+    source.add_argument("--stdin", dest="read_stdin", action="store_true", help="read the secret from standard input")
+    source.add_argument("--fd", type=int, help="read the secret from an inherited descriptor numbered 3 or higher")
     secret_set.add_argument("name")
-    secret_set.add_argument("value")
+    secret_set.add_argument("value", nargs="?", help=argparse.SUPPRESS)
     secret_set.set_defaults(func=cmd_secret_set)
     secret_list = secret_sub.add_parser("list")
     secret_list.add_argument("--json", action="store_true")

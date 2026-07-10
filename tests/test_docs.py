@@ -12,12 +12,17 @@ class DocsTests(unittest.TestCase):
         readme = (ROOT / "README.md").read_text()
         compat = (ROOT / "docs" / "ccswitch-compat.md").read_text()
         recovery = (ROOT / "docs" / "recovery.md").read_text()
+        secrets = (ROOT / "docs" / "secrets-and-wrappers.md").read_text()
+        instructions = (ROOT / "src" / "agent_switch" / "instructions.py").read_text()
         self.assertIn("agent-switch doctor", readme)
         self.assertIn("agent-*", compat)
         self.assertIn("CC Switch", compat)
         self.assertIn("agent-switch reconcile", recovery)
+        self.assertIn("secret set --stdin", secrets)
+        self.assertIn("secret set --fd", secrets)
+        self.assertIn("secret set --stdin", instructions)
+        self.assertNotIn("secret set NAME VALUE` to add", instructions)
 
 
 if __name__ == "__main__":
     unittest.main()
-

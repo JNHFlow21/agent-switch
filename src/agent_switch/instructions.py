@@ -28,7 +28,7 @@ Agent Switch is the source of truth for local agent tools, MCP wrappers, and too
 Secret and MCP rules:
 - Store API keys, tokens, and MCP credentials only in `{paths.secrets_file}`.
 - Do not write secrets into project `.env` files, README files, native app configs, chat transcripts, shell history, or logs.
-- Use `agent-switch secret set NAME VALUE` to add or update a secret.
+- Pipe a secret-producing command into `agent-switch secret set --stdin NAME`, or use `agent-switch secret set --fd N NAME`; never pass the value as a command argument.
 - Use `agent-switch secret list` to inspect available secret names without revealing values.
 - Use `agent-switch doctor` before changing MCP/tool configuration.
 - Use `agent-switch reconcile` to regenerate native app MCP configuration.
