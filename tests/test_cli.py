@@ -71,6 +71,48 @@ class CliTests(unittest.TestCase):
                 )
             self.assertEqual(code, 0)
 
+    def test_agents_json_reports_supported_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = run_cli(
+                [
+                    "--home",
+                    str(Path(tmp) / "agent"),
+                    "--user-home",
+                    str(Path(tmp) / "user"),
+                    "agents",
+                    "--json",
+                ]
+            )
+            self.assertEqual(result.returncode, 0, result.stderr.decode(errors="replace"))
+            payload = __import__("json").loads(result.stdout)
+            self.assertEqual([item["id"] for item in payload["agents"]], ["codex", "claude", "hermes"])
+
+    def test_clis_json_reports_curated_inventory(self) -> None:
+        result = run_cli(["clis", "--json"])
+        self.assertEqual(result.returncode, 0, result.stderr.decode(errors="replace"))
+        payload = __import__("json").loads(result.stdout)
+        self.assertIn("codex", [item["id"] for item in payload["clis"]])
+
+    def test_skills_json_uses_configured_skill_hub(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            hub = Path(tmp) / "hub"
+            (hub / "config").mkdir(parents=True)
+            (hub / "profiles").mkdir()
+            (hub / "config" / "registry.json").write_text('{"sources": {}}')
+            previous = os.environ.get("SKILL_HUB_HOME")
+            os.environ["SKILL_HUB_HOME"] = str(hub)
+            try:
+                stdout = io.StringIO()
+                with contextlib.redirect_stdout(stdout):
+                    code = main(["skills", "--json"])
+            finally:
+                if previous is None:
+                    os.environ.pop("SKILL_HUB_HOME", None)
+                else:
+                    os.environ["SKILL_HUB_HOME"] = previous
+            self.assertEqual(code, 0)
+            self.assertEqual(__import__("json").loads(stdout.getvalue())["hubPath"], str(hub.resolve()))
+
     def test_preview_json_classifies_mcp(self) -> None:
         import base64
         import json
@@ -111,6 +153,23 @@ class CliTests(unittest.TestCase):
             self.assertEqual(listed.returncode, 0)
             self.assertEqual(listed.stdout.strip(), b"EXAMPLE_API_KEY")
             self.assertNotIn(fixture_value, listed.stdout + listed.stderr)
+
+    def test_secret_delete_removes_name_without_printing_value(self) -> None:
+        fixture_value = b"fixture-delete-value"
+        with tempfile.TemporaryDirectory() as tmp:
+            common = ["--home", str(Path(tmp) / "agent"), "--user-home", str(Path(tmp) / "user")]
+            created = run_cli([*common, "secret", "set", "--stdin", "DELETE_API_KEY"], input_data=fixture_value)
+            self.assertEqual(created.returncode, 0)
+
+            deleted = run_cli([*common, "secret", "delete", "DELETE_API_KEY"])
+            self.assertEqual(deleted.returncode, 0, deleted.stderr.decode(errors="replace"))
+            self.assertIn(b"DELETE_API_KEY", deleted.stdout)
+            self.assertNotIn(fixture_value, deleted.stdout + deleted.stderr)
+            self.assertNotIn("DELETE_API_KEY", (Path(tmp) / "agent" / "secrets.env").read_text())
+
+            missing = run_cli([*common, "secret", "delete", "DELETE_API_KEY"])
+            self.assertEqual(missing.returncode, 2)
+            self.assertNotIn(fixture_value, missing.stdout + missing.stderr)
 
     def test_secret_fd_reads_inherited_descriptor_without_printing_value(self) -> None:
         fixture_value = b"fixture-fd-value"

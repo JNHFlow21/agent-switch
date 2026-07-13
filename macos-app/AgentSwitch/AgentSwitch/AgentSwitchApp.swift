@@ -45,6 +45,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                 .frame(minWidth: 820, minHeight: 560)
         )
         let window = NSWindow(contentViewController: controller)
+        window.appearance = NSAppearance(named: .aqua)
         window.title = L10n.appName
         window.styleMask = [.titled, .closable, .miniaturizable, .resizable]
         window.minSize = NSSize(width: 820, height: 560)
@@ -87,10 +88,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let actionsMenuItem = NSMenuItem()
         let actionsMenu = NSMenu(title: L10n.actions)
-        actionsMenu.addItem(menuItem(title: L10n.runDoctor, action: #selector(runDoctor), key: "D"))
-        actionsMenu.addItem(menuItem(title: L10n.reconcile, action: #selector(reconcile), key: "R"))
-        actionsMenu.addItem(NSMenuItem.separator())
-        actionsMenu.addItem(menuItem(title: L10n.refresh, action: #selector(refresh), key: "r"))
+        actionsMenu.addItem(menuItem(title: L10n.syncAndCheck, action: #selector(syncAndCheck), key: "R"))
         actionsMenuItem.submenu = actionsMenu
         mainMenu.addItem(actionsMenuItem)
 
@@ -115,16 +113,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         showMainWindow()
     }
 
-    @objc private func runDoctor() {
-        Task { await appState.runDoctor() }
-    }
-
-    @objc private func reconcile() {
+    @objc private func syncAndCheck() {
         Task { await appState.runReconcile() }
-    }
-
-    @objc private func refresh() {
-        Task { await appState.refresh() }
     }
 }
 

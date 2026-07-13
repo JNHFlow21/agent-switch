@@ -21,6 +21,9 @@
 		A1000001000000000000000C /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000C; };
 		A1000001000000000000000D /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000D; };
 		A1000001000000000000000E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000E; };
+		A1000001000000000000000F /* AgentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F; };
+		A10000010000000000000010 /* CLIsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010; };
+		A10000010000000000000011 /* SkillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +41,9 @@
 		A2000001000000000000000C /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A2000001000000000000000D /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
 		A2000001000000000000000E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A2000001000000000000000F /* AgentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000010 /* CLIsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000011 /* SkillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsView.swift; sourceTree = "<group>"; };
 		A30000010000000000000001 /* Agent Switch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Agent Switch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -127,6 +133,9 @@
 			isa = PBXGroup;
 			children = (
 				A4000001000000000000000A /* Dashboard */,
+				A4000001000000000000000F /* Agents */,
+				A40000010000000000000010 /* CLIs */,
+				A40000010000000000000011 /* Skills */,
 				A4000001000000000000000B /* Tools */,
 				A4000001000000000000000C /* Secrets */,
 				A4000001000000000000000D /* Settings */,
@@ -173,6 +182,30 @@
 				A2000001000000000000000E /* Assets.xcassets */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		A4000001000000000000000F /* Agents */ = {
+			isa = PBXGroup;
+			children = (
+				A2000001000000000000000F /* AgentsView.swift */,
+			);
+			path = Agents;
+			sourceTree = "<group>";
+		};
+		A40000010000000000000010 /* CLIs */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000010 /* CLIsView.swift */,
+			);
+			path = CLIs;
+			sourceTree = "<group>";
+		};
+		A40000010000000000000011 /* Skills */ = {
+			isa = PBXGroup;
+			children = (
+				A20000010000000000000011 /* SkillsView.swift */,
+			);
+			path = Skills;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -251,6 +284,9 @@
 				A1000001000000000000000B /* SecretsView.swift in Sources */,
 				A1000001000000000000000C /* SettingsView.swift in Sources */,
 				A1000001000000000000000D /* L10n.swift in Sources */,
+				A1000001000000000000000F /* AgentsView.swift in Sources */,
+				A10000010000000000000010 /* CLIsView.swift in Sources */,
+				A10000010000000000000011 /* SkillsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

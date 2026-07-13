@@ -9,12 +9,16 @@ from pathlib import Path
 from typing import BinaryIO
 
 from agent_switch.atomic import write_if_changed
+from agent_switch import __version__
+from agent_switch.agents import agent_statuses
 from agent_switch.ccswitch.imports import preview_deeplink
+from agent_switch.cli_inventory import cli_inventory
 from agent_switch.config.loader import load_config, render_default_config
 from agent_switch.paths import paths_for
 from agent_switch.reconcile.apply import apply_reconcile
 from agent_switch.reconcile.doctor import run_doctor
-from agent_switch.security.secrets import MAX_SECRET_BYTES, get_secret, list_secret_names, set_secret
+from agent_switch.security.secrets import MAX_SECRET_BYTES, delete_secret, get_secret, list_secret_names, set_secret
+from agent_switch.skill_inventory import load_skill_report, update_git_skill_sources
 from agent_switch.status.dashboard import render_dashboard
 from agent_switch.status.report import human_report
 
@@ -75,6 +79,51 @@ def cmd_write_default_config(args: argparse.Namespace) -> int:
     paths, config = _load(args)
     result = write_if_changed(paths.config_file, render_default_config(config), backup_dir=paths.backup_dir)
     sys.stdout.write(f"{'wrote' if result.changed else 'unchanged'} {result.path}\n")
+    return 0
+
+
+def cmd_agents(args: argparse.Namespace) -> int:
+    paths, config = _load(args)
+    statuses = agent_statuses(config, paths)
+    if args.json:
+        sys.stdout.write(json.dumps({"agents": [item.to_dict() for item in statuses]}, ensure_ascii=False, indent=2) + "\n")
+    else:
+        for item in statuses:
+            state = "not-detected"
+            if item.detected:
+                state = "managed" if item.in_sync else "needs-sync" if item.managed else "unmanaged"
+            sys.stdout.write(f"{item.id}: {state}\n")
+    return 0
+
+
+def cmd_clis(args: argparse.Namespace) -> int:
+    items = cli_inventory()
+    if args.json:
+        sys.stdout.write(json.dumps({"clis": [item.to_dict() for item in items]}, ensure_ascii=False, indent=2) + "\n")
+    else:
+        for item in items:
+            state = item.version or item.path or "not-installed"
+            sys.stdout.write(f"{item.id}: {state}\n")
+    return 0
+
+
+def cmd_skills_list(args: argparse.Namespace) -> int:
+    report = load_skill_report()
+    if args.json:
+        sys.stdout.write(json.dumps(report.to_dict(), ensure_ascii=False, indent=2) + "\n")
+    else:
+        for item in report.skills:
+            sys.stdout.write(f"{item.name}: {item.status} ({item.source})\n")
+    return 0
+
+
+def cmd_skills_update(args: argparse.Namespace) -> int:
+    output = update_git_skill_sources()
+    if args.json:
+        report = load_skill_report()
+        sys.stdout.write(json.dumps({"updated": True, "message": output, "report": report.to_dict()}, ensure_ascii=False, indent=2) + "\n")
+    else:
+        sys.stdout.write(output + ("\n" if output else ""))
     return 0
 
 
@@ -211,8 +260,16 @@ def cmd_secret_list(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_secret_delete(args: argparse.Namespace) -> int:
+    paths, _config = _load(args)
+    delete_secret(paths.secrets_file, args.name)
+    sys.stdout.write(f"deleted {args.name} from {paths.secrets_file}\n")
+    return 0
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="agent-switch")
+    parser.add_argument("--version", action="version", version=f"agent-switch {__version__}")
     parser.add_argument("--home", help="Agent Switch home directory")
     parser.add_argument("--user-home", help="Target user home for native app configs")
     parser.add_argument("--config", help="Central config JSON path")
@@ -249,6 +306,25 @@ def build_parser() -> argparse.ArgumentParser:
     defaults = sub.add_parser("write-default-config")
     defaults.set_defaults(func=cmd_write_default_config)
 
+    agents = sub.add_parser("agents")
+    agents.add_argument("--json", action="store_true")
+    agents.set_defaults(func=cmd_agents)
+
+    clis = sub.add_parser("clis")
+    clis.add_argument("--json", action="store_true")
+    clis.set_defaults(func=cmd_clis)
+
+    skills = sub.add_parser("skills")
+    skills_sub = skills.add_subparsers(dest="skills_command")
+    skills.add_argument("--json", action="store_true")
+    skills.set_defaults(func=cmd_skills_list)
+    skills_list = skills_sub.add_parser("list")
+    skills_list.add_argument("--json", action="store_true")
+    skills_list.set_defaults(func=cmd_skills_list)
+    skills_update = skills_sub.add_parser("update")
+    skills_update.add_argument("--json", action="store_true")
+    skills_update.set_defaults(func=cmd_skills_update)
+
     secret = sub.add_parser("secret")
     secret_sub = secret.add_subparsers(dest="secret_command", required=True)
     secret_set = secret_sub.add_parser("set")
@@ -265,6 +341,9 @@ def build_parser() -> argparse.ArgumentParser:
     secret_list = secret_sub.add_parser("list")
     secret_list.add_argument("--json", action="store_true")
     secret_list.set_defaults(func=cmd_secret_list)
+    secret_delete = secret_sub.add_parser("delete")
+    secret_delete.add_argument("name")
+    secret_delete.set_defaults(func=cmd_secret_delete)
     return parser
 
 

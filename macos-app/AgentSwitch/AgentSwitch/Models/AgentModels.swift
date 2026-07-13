@@ -1,5 +1,5 @@
 // [INPUT]: Foundation, AgentSwitch Python CLI
-// [OUTPUT]: Data models mirroring Python DoctorReport, ToolSpec, SecretReport
+// [OUTPUT]: Data models mirroring Python doctor, Agent, CLI, Skill, and configuration reports
 // [POS]: Models layer — shared data structures decoded from CLI JSON output
 // [PROTOCOL]: When this file changes, update this header, then check CLAUDE.md
 
@@ -36,6 +36,75 @@ struct SecretInfo: Codable {
     let required: [String]
     let missing: [String]
     let presentNames: [String]
+    let storedNames: [String]
+}
+
+struct AgentReport: Codable {
+    let agents: [AgentInfo]
+}
+
+struct AgentInfo: Codable, Identifiable {
+    let id: String
+    let name: String
+    let detected: Bool
+    let managed: Bool
+    let inSync: Bool
+    let configPath: String
+    let instructionPath: String
+}
+
+struct CLIReport: Codable {
+    let clis: [CLIInfo]
+}
+
+struct CLIInfo: Codable, Identifiable {
+    let id: String
+    let name: String
+    let command: String
+    let manager: String
+    let versionArgs: [String]
+    let installed: Bool
+    let path: String?
+    let version: String?
+}
+
+struct SkillReport: Codable {
+    let hubPath: String
+    let sources: [SkillSourceInfo]
+    let profiles: [SkillProfileInfo]
+    let skills: [SkillInfo]
+    let dormantCount: Int
+}
+
+struct SkillSourceInfo: Codable, Identifiable {
+    let id: String
+    let type: String
+    let path: String
+    let ref: String?
+    let revision: String?
+    let updatedAt: String?
+    let installed: Bool
+}
+
+struct SkillProfileInfo: Codable, Identifiable {
+    let id: String
+    let project: String
+    let skillCount: Int
+}
+
+struct SkillInfo: Codable, Identifiable {
+    let id: String
+    let name: String
+    let source: String
+    let path: String
+    let absolutePath: String
+    let sourceType: String
+    let ref: String?
+    let revision: String?
+    let profiles: [String]
+    let globalActive: Bool
+    let status: String
+    let exists: Bool
 }
 
 struct ToolInfo: Codable, Identifiable {

@@ -1,9 +1,10 @@
 // [INPUT]: SwiftUI, DSTokens
-// [OUTPUT]: DSPage, DSCard, DSBadge, DSMetricCard reusable components
+// [OUTPUT]: Flat graphite-on-paper page, card, badge, metric, icon, and file-path components
 // [POS]: DesignSystem/Components — product-level reusable views
 // [PROTOCOL]: When this file changes, update this header, then check CLAUDE.md
 
 import SwiftUI
+import AppKit
 
 // MARK: - Page
 
@@ -37,6 +38,7 @@ struct DSPage<Content: View>: View {
                 content
             }
             .padding(DSSpacing.xl)
+            .frame(maxWidth: 1200, alignment: .leading)
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(DSColor.background)
@@ -53,6 +55,7 @@ struct DSPageHeader: View {
             VStack(alignment: .leading, spacing: DSSpacing.xs) {
                 Text(title)
                     .font(DSTypography.title)
+                    .foregroundStyle(DSColor.textPrimary)
                 if let subtitle {
                     Text(subtitle)
                         .font(DSTypography.caption)
@@ -85,12 +88,11 @@ struct DSCard<Content: View>: View {
             .padding(DSSpacing.lg)
             .background(
                 RoundedRectangle(cornerRadius: DSRadius.medium, style: .continuous)
-                    .fill(.background)
-                    .shadow(color: DSDepth.card.color, radius: DSDepth.card.radius, x: DSDepth.card.x, y: DSDepth.card.y)
+                    .fill(DSColor.surface)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: DSRadius.medium, style: .continuous)
-                    .stroke(DSColor.separator.opacity(0.5), lineWidth: 0.5)
+                    .stroke(DSColor.separator, lineWidth: 1)
             )
     }
 }
@@ -107,13 +109,13 @@ struct DSBadge: View {
 
     private var foreground: Color {
         switch tone {
-        case .good: return DSColor.statusGood
-        case .warn: return DSColor.statusWarn
-        case .bad: return DSColor.statusBad
-        case .info: return DSColor.statusInfo
+        case .good: return DSColor.textPrimary
+        case .warn: return DSColor.textSecondary
+        case .bad: return DSColor.textPrimary
+        case .info: return DSColor.textSecondary
         case .neutral: return DSColor.textSecondary
         case .route: return DSColor.statusInfo
-        case .app: return Color(red: 0.22, green: 0.25, blue: 0.32)
+        case .app: return DSColor.textPrimary
         }
     }
 
@@ -125,17 +127,17 @@ struct DSBadge: View {
         case .info: return DSColor.statusInfoBg
         case .neutral: return Color(nsColor: .quaternaryLabelColor).opacity(0.3)
         case .route: return DSColor.statusInfoBg
-        case .app: return Color(red: 0.93, green: 0.97, blue: 0.96)
+        case .app: return DSColor.sidebar
         }
     }
 
     var body: some View {
         Text(text)
-            .font(.system(size: 11, weight: .semibold))
+            .font(.system(size: 14, weight: .medium))
             .foregroundStyle(foreground)
-            .padding(.horizontal, 8)
-            .padding(.vertical, 3)
-            .background(background, in: Capsule())
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(background)
     }
 }
 
@@ -156,7 +158,7 @@ struct DSMetricCard: View {
                     .tracking(0.5)
 
                 Text(value)
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .font(.system(size: 24, weight: .semibold, design: .default))
                     .foregroundStyle(DSColor.textPrimary)
 
                 Text(note)
@@ -166,6 +168,32 @@ struct DSMetricCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
+    }
+}
+
+// MARK: - Compact Icon Button
+
+struct DSIconButton: View {
+    let systemName: String
+    let help: String
+    var disabled = false
+    let action: () -> Void
+    @State private var isHovering = false
+
+    var body: some View {
+        Button(action: action) {
+            Image(systemName: systemName)
+                .font(.system(size: 16, weight: .regular))
+                .foregroundStyle(disabled ? DSColor.textMuted : DSColor.textPrimary)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 6)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .background(isHovering && !disabled ? DSColor.hover : Color.clear, in: RoundedRectangle(cornerRadius: DSRadius.medium))
+        .disabled(disabled)
+        .help(help)
+        .onHover { isHovering = $0 }
     }
 }
 
@@ -189,5 +217,57 @@ struct DSInfoRow: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, DSSpacing.xs)
+    }
+}
+
+// MARK: - File Path
+
+struct DSPathRow: View {
+    let label: String
+    let path: String
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: DSSpacing.lg) {
+            Text(label)
+                .font(DSTypography.body)
+                .foregroundStyle(DSColor.textSecondary)
+                .frame(width: 140, alignment: .leading)
+            Text(path)
+                .font(DSTypography.mono)
+                .foregroundStyle(DSColor.textPrimary)
+                .textSelection(.enabled)
+                .lineLimit(2)
+                .truncationMode(.middle)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            DSPathActions(path: path)
+        }
+        .padding(.vertical, DSSpacing.xs)
+    }
+}
+
+struct DSPathActions: View {
+    let path: String
+
+    private var expandedPath: String {
+        NSString(string: path).expandingTildeInPath
+    }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            DSIconButton(systemName: "arrow.up.right.square", help: L10n.openFile) {
+                NSWorkspace.shared.open(URL(fileURLWithPath: expandedPath))
+            }
+            DSIconButton(systemName: "folder", help: L10n.revealInFinder) {
+                revealInFinder()
+            }
+        }
+    }
+
+    private func revealInFinder() {
+        var url = URL(fileURLWithPath: expandedPath)
+        while !FileManager.default.fileExists(atPath: url.path), url.path != "/" {
+            url.deleteLastPathComponent()
+        }
+        NSWorkspace.shared.activateFileViewerSelecting([url])
     }
 }

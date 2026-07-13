@@ -78,13 +78,13 @@ struct SettingsView: View {
                 Text(L10n.runtimePaths)
                     .font(DSTypography.heading)
 
-                DSInfoRow(label: L10n.config, value: "~/.config/agent-switch/config.json")
+                DSPathRow(label: L10n.config, path: "~/.config/agent-switch/config.json")
                 Divider()
-                DSInfoRow(label: L10n.secretsPath, value: "~/.config/agent-switch/secrets.env")
+                DSPathRow(label: L10n.secretsPath, path: "~/.config/agent-switch/secrets.env")
                 Divider()
-                DSInfoRow(label: L10n.wrappers, value: "~/.config/agent-switch/mcp/bin/")
+                DSPathRow(label: L10n.wrappers, path: "~/.config/agent-switch/mcp/bin/")
                 Divider()
-                DSInfoRow(label: L10n.backups, value: "~/.config/agent-switch/backups/")
+                DSPathRow(label: L10n.backups, path: "~/.config/agent-switch/backups/")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -96,13 +96,13 @@ struct SettingsView: View {
                 Text(L10n.targetConfigs)
                     .font(DSTypography.heading)
 
-                DSInfoRow(label: "Claude Code", value: "~/.claude.json")
+                DSPathRow(label: "Claude Code", path: "~/.claude.json")
                 Divider()
-                DSInfoRow(label: "Claude Desktop", value: "~/Library/Application Support/Claude/claude_desktop_config.json")
+                DSPathRow(label: "Claude Desktop", path: "~/Library/Application Support/Claude/claude_desktop_config.json")
                 Divider()
-                DSInfoRow(label: "Codex", value: "~/.codex/config.toml")
+                DSPathRow(label: "Codex", path: "~/.codex/config.toml")
                 Divider()
-                DSInfoRow(label: "Hermes", value: "~/.hermes/config.yaml")
+                DSPathRow(label: "Hermes", path: "~/.hermes/config.yaml")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }

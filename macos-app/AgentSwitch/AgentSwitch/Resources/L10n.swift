@@ -9,6 +9,9 @@ enum L10n {
     // MARK: - Sidebar
     static let appName = String(localized: "Agent Switch", comment: "App name")
     static let dashboard = String(localized: "仪表板", comment: "Sidebar: Dashboard")
+    static let agents = String(localized: "Agent 托管", comment: "Sidebar: Agents")
+    static let clis = String(localized: "CLI 管理", comment: "Sidebar: CLI")
+    static let skills = String(localized: "Skill 仓库", comment: "Sidebar: Skills")
     static let mcpTools = String(localized: "MCP 工具", comment: "Sidebar: MCP Tools")
     static let secrets = String(localized: "密钥管理", comment: "Sidebar: Secrets")
     static let settings = String(localized: "设置", comment: "Sidebar: Settings")
@@ -18,8 +21,6 @@ enum L10n {
 
     // MARK: - Dashboard
     static let lastRefreshed = String(localized: "上次刷新：", comment: "Dashboard header")
-    static let refresh = String(localized: "刷新", comment: "Toolbar: Refresh")
-    static let reconcile = String(localized: "修复同步", comment: "Toolbar: Reconcile")
     static let blocked = String(localized: "已阻塞", comment: "State: blocked")
     static let ready = String(localized: "就绪", comment: "State: ready")
     static let drift = String(localized: "漂移", comment: "Drift suffix")
@@ -61,6 +62,7 @@ enum L10n {
 
     // MARK: - Secrets
     static let secretsInventory = String(localized: "密钥清单", comment: "Page: Secrets")
+    static let secretManagementSubtitle = String(localized: "安全地添加、查看和维护本机密钥", comment: "Page: Secrets subtitle")
     static let secretFile = String(localized: "密钥文件", comment: "Metric: secret file")
     static let found = String(localized: "已找到", comment: "Secret file found")
     static let missingFile = String(localized: "文件缺失", comment: "Secret file missing")
@@ -76,6 +78,74 @@ enum L10n {
     static let secretsRuntimeNote = String(localized: "密钥由 wrapper 脚本在运行时加载，不会嵌入应用配置文件中。", comment: "Note")
     static let noSecretInfo = String(localized: "无密钥信息", comment: "Empty state title")
     static let runDoctorForSecrets = String(localized: "运行 Doctor 以检查密钥状态", comment: "Empty state subtitle")
+    static let stored = String(localized: "已保存", comment: "Secret stored count")
+    static let storedSecrets = String(localized: "已保存密钥", comment: "Metric: stored secrets")
+    static let storedSecretsNote = String(localized: "包括暂未被 MCP 引用的密钥", comment: "Stored secrets note")
+    static let requiredSecretsNote = String(localized: "当前 MCP 配置声明需要", comment: "Required secrets note")
+    static let allSecrets = String(localized: "全部密钥", comment: "Section: all secrets")
+    static let noStoredSecrets = String(localized: "尚未保存任何密钥。", comment: "Empty secret list")
+    static let addSecret = String(localized: "添加密钥", comment: "Add secret")
+    static let updateSecret = String(localized: "更新密钥", comment: "Update secret")
+    static let deleteSecret = String(localized: "删除密钥", comment: "Delete secret")
+    static let deleteSecretConfirmation = String(localized: "确认删除本机密钥：", comment: "Delete secret confirmation")
+    static let revealSecret = String(localized: "查看密钥", comment: "Reveal secret")
+    static let hideSecret = String(localized: "隐藏密钥", comment: "Hide secret")
+    static let copySecret = String(localized: "复制密钥", comment: "Copy secret")
+    static let configureSecret = String(localized: "配置密钥", comment: "Configure missing secret")
+    static let notConfigured = String(localized: "尚未配置", comment: "Secret missing")
+    static let requiredBadge = String(localized: "必需", comment: "Required badge")
+    static let secretEditorNote = String(localized: "密钥值通过安全管道写入，不会进入命令参数或日志。", comment: "Secret editor note")
+    static let secretName = String(localized: "密钥名称，例如 FIRECRAWL_API_KEY", comment: "Secret name field")
+    static let secretNameLabel = String(localized: "密钥名称", comment: "Existing secret name label")
+    static let secretValue = String(localized: "密钥值", comment: "Secret value field")
+    static let cancel = String(localized: "取消", comment: "Cancel")
+
+    // MARK: - CLI management
+    static let cliManagement = String(localized: "CLI 管理", comment: "Page: CLI management")
+    static let cliManagementSubtitle = String(localized: "查看本机 Agent 与工具链的安装路径和版本", comment: "CLI page subtitle")
+    static let installed = String(localized: "已安装", comment: "Installed status")
+    static let notInstalled = String(localized: "未安装", comment: "Not installed status")
+    static let packageManager = String(localized: "安装方式", comment: "CLI package manager")
+    static let installedCLIs = String(localized: "已安装 CLI", comment: "Installed CLI metric")
+    static let cliInventory = String(localized: "CLI 清单", comment: "CLI list")
+    static let cliUpdateNote = String(localized: "当前先统一盘点版本与路径；自动更新将按各 CLI 的安装方式执行。", comment: "CLI update note")
+
+    // MARK: - Skill management
+    static let skillWarehouse = String(localized: "Skill 仓库", comment: "Page: Skill warehouse")
+    static let skillWarehouseSubtitle = String(localized: "下载只入库；明确加载后才进入项目或全局", comment: "Skill page subtitle")
+    static let skillSources = String(localized: "来源", comment: "Skill sources")
+    static let skillProfiles = String(localized: "项目配置", comment: "Skill profiles")
+    static let skillInventory = String(localized: "Skill 清单", comment: "Skill list")
+    static let dormant = String(localized: "沉默", comment: "Dormant skill")
+    static let projectActive = String(localized: "项目", comment: "Project active skill")
+    static let globalActive = String(localized: "全局", comment: "Global active skill")
+    static let missingSkill = String(localized: "缺失", comment: "Missing skill")
+    static let searchSkills = String(localized: "搜索 Skill、来源或项目", comment: "Search skills")
+    static let updateGitSources = String(localized: "更新 Git 来源", comment: "Update git skill sources")
+    static let updateGitSourcesNote = String(localized: "只更新 Skill Hub 中的 Git 仓库和版本锁，不会自动启用任何 Skill。", comment: "Skill update note")
+    static let noMatchingSkills = String(localized: "没有匹配的 Skill", comment: "No matching skills")
+
+    // MARK: - File actions
+    static let openFile = String(localized: "直接打开", comment: "Open file action")
+    static let syncAndCheck = String(localized: "同步并检查", comment: "Single toolbar synchronization action")
+
+    // MARK: - Agent management
+    static let agentManagement = String(localized: "Agent 托管", comment: "Page: agent management")
+    static let agentManagementSubtitle = String(localized: "一套规则，同步到所有受支持的 Agent", comment: "Agent page subtitle")
+    static let managed = String(localized: "已托管", comment: "Managed status")
+    static let detected = String(localized: "已发现", comment: "Detected status")
+    static let notDetected = String(localized: "未发现", comment: "Not detected status")
+    static let notManaged = String(localized: "未托管", comment: "Not managed status")
+    static let synchronized = String(localized: "已同步", comment: "Synchronized status")
+    static let needsSync = String(localized: "需要同步", comment: "Needs sync status")
+    static let manageDetectedAgents = String(localized: "托管并同步所有支持的 Agent", comment: "Manage supported agents")
+    static let manageDetectedAgentsNote = String(localized: "只写入 Agent Switch 管理区域；其他配置保持不变并自动备份。", comment: "Manage agents note")
+    static let howManagementWorks = String(localized: "规则如何生效", comment: "How management works heading")
+    static let howManagementWorksBody = String(localized: "Agent Switch 维护一份统一规则，再分别写入 Codex 的 AGENTS.md 入口、Claude Code 的 CLAUDE.md 管理区和 Hermes 的 SOUL.md 管理区。", comment: "How management works body")
+    static let welcomeHeading = String(localized: "让 Agent Switch 接管这套环境", comment: "Onboarding heading")
+    static let welcomeBody = String(localized: "已发现以下 Agent。开始托管后，Agent Switch 将同步统一指令和 MCP，并保留、备份现有配置。", comment: "Onboarding body")
+    static let startManagement = String(localized: "开始托管", comment: "Start management")
+    static let notNow = String(localized: "暂不处理", comment: "Not now")
 
     // MARK: - Settings
     static let general = String(localized: "通用", comment: "Settings: General")
@@ -92,6 +162,5 @@ enum L10n {
     static let repository = String(localized: "仓库地址", comment: "Settings label")
 
     // MARK: - Actions (menu)
-    static let runDoctor = String(localized: "运行 Doctor", comment: "Menu: Run Doctor")
     static let actions = String(localized: "操作", comment: "Menu: Actions")
 }

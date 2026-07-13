@@ -85,7 +85,8 @@ def merge_managed_block(current_text: str, body: str) -> str:
     end = current_text.find(MANAGED_END)
     if start != -1 and end != -1 and end > start:
         end += len(MANAGED_END)
-        merged = current_text[:start].rstrip() + "\n\n" + block + current_text[end:].lstrip("\n")
+        prefix = current_text[:start].rstrip()
+        merged = (prefix + "\n\n" if prefix else "") + block + current_text[end:].lstrip("\n")
         return merged.rstrip() + "\n"
     base = current_text.rstrip()
     if not base:

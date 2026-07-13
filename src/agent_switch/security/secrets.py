@@ -22,6 +22,7 @@ class SecretReport:
     required: tuple[str, ...]
     missing: tuple[str, ...]
     present_names: tuple[str, ...]
+    stored_names: tuple[str, ...] = ()
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -30,6 +31,7 @@ class SecretReport:
             "required": list(self.required),
             "missing": list(self.missing),
             "presentNames": list(self.present_names),
+            "storedNames": list(self.stored_names),
         }
 
 
@@ -182,6 +184,25 @@ def get_secret(path: str | Path, name: str) -> str:
     return value
 
 
+def delete_secret(path: str | Path, name: str) -> None:
+    if not SECRET_NAME_RE.fullmatch(name):
+        raise ValueError(f"invalid secret name: {name}")
+    secret_path = Path(path)
+    if not secret_path.parent.exists():
+        raise ValueError(f"secret not found: {name}")
+    with _secret_lock(secret_path):
+        if not secret_path.exists():
+            raise ValueError(f"secret not found: {name}")
+        lines = secret_path.read_text(encoding="utf-8").splitlines()
+        output = [line for line in lines if _line_key(line) != name]
+        if len(output) == len(lines):
+            raise ValueError(f"secret not found: {name}")
+        rendered = "\n".join(output).rstrip()
+        text = rendered + "\n" if rendered else ""
+        write_if_changed(secret_path, text, mode=0o600)
+        secret_path.chmod(0o600)
+
+
 def list_secret_names(path: str | Path) -> tuple[str, ...]:
     values = read_env_file(path)
     return tuple(sorted(name for name, value in values.items() if value))
@@ -198,4 +219,5 @@ def check_secrets(config: AgentConfig) -> SecretReport:
         required=required,
         missing=missing,
         present_names=present,
+        stored_names=tuple(sorted(name for name, value in values.items() if value)),
     )

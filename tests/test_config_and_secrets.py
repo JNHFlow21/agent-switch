@@ -42,10 +42,13 @@ class ConfigAndSecretTests(unittest.TestCase):
     def test_secret_report_exposes_names_only(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             secret_file = Path(tmp) / "secrets.env"
-            secret_file.write_text("TAVILY_API_KEY=sk-secret000000000000\n")
+            secret_file.write_text("TAVILY_API_KEY=sk-secret000000000000\nUNUSED_API_KEY=fixture-unused\n")
             config = default_config(secret_file)
             report = check_secrets(config)
             self.assertIn("TAVILY_API_KEY", report.present_names)
+            self.assertIn("TAVILY_API_KEY", report.stored_names)
+            self.assertIn("UNUSED_API_KEY", report.stored_names)
+            self.assertNotIn("UNUSED_API_KEY", report.present_names)
             self.assertNotIn("sk-secret", json.dumps(report.to_dict()))
             self.assertIn("XCRAWL_API_KEY", report.missing)
 

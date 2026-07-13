@@ -43,6 +43,7 @@ secret-producing-command | agent-switch secret set --stdin FIRECRAWL_API_KEY
 agent-switch secret set --fd 3 FIRECRAWL_API_KEY 3< <(secret-producing-command)
 agent-switch secret get --fd 3 FIRECRAWL_API_KEY 3> >(secret-consuming-command)
 agent-switch secret list
+agent-switch secret delete FIRECRAWL_API_KEY
 ```
 
 `--stdin` and `--fd` keep the value out of the Agent Switch process arguments.
@@ -61,6 +62,23 @@ which must be numbered 3 or higher and must not be a TTY or an alias of stdout
 or stderr.
 
 `secret list` prints names only. It does not print values.
+
+`secret delete` removes one named value under the same exclusive lock and atomic
+write contract used by `secret set`. It preserves comments, unrelated names,
+and mode `0600`, and never prints a secret value.
+
+## macOS Secret UI
+
+The macOS app uses the same backend contracts rather than reading the file
+directly:
+
+- writes stream the value to `secret set --stdin`;
+- the eye button reveals or hides a value directly without a system authentication dialog;
+- revealed bytes travel through a private mode-`0600` FIFO connected to
+  `secret get --fd 3`, never stdout or stderr;
+- revealed values stay visible until the eye button is clicked again or the
+  user leaves the secret page;
+- copy is a normal explicit clipboard action.
 
 ## Global Instructions
 
@@ -81,6 +99,11 @@ Native app integration:
 - Hermes: `~/.hermes/SOUL.md` receives a managed Agent Switch block.
 
 These instructions are policy only. The source of truth remains `secrets.env`, wrapper scripts, and generated native MCP config.
+
+Run `agent-switch agents --json` to inspect detection, instruction enrollment,
+and synchronization status for the currently supported targets: Codex, Claude
+Code, and Hermes. A future agent needs its own adapter before Agent Switch can
+manage it safely.
 
 ## Wrapper Behavior
 

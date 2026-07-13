@@ -7,7 +7,8 @@ let package = Package(
     targets: [
         .executableTarget(
             name: "AgentSwitch",
-            path: "AgentSwitch"
+            path: "AgentSwitch",
+            exclude: ["Resources/Assets.xcassets"]
         ),
     ]
 )

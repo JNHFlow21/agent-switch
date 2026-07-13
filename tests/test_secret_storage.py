@@ -10,13 +10,44 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from agent_switch.security.secrets import MAX_SECRET_BYTES, _secret_lock, get_secret, list_secret_names, read_env_file, set_secret
+from agent_switch.security.secrets import (
+    MAX_SECRET_BYTES,
+    _secret_lock,
+    delete_secret,
+    get_secret,
+    list_secret_names,
+    read_env_file,
+    set_secret,
+)
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
 
 class SecretStorageTests(unittest.TestCase):
+    def test_delete_secret_preserves_unrelated_lines_and_private_mode(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            secret_file = Path(tmp) / "agent" / "secrets.env"
+            secret_file.parent.mkdir()
+            secret_file.write_text("# keep this comment\nFIRST_API_KEY=first-value\nSECOND_API_KEY=second-value\n")
+            secret_file.chmod(0o644)
+
+            delete_secret(secret_file, "FIRST_API_KEY")
+
+            contents = secret_file.read_text()
+            self.assertIn("# keep this comment", contents)
+            self.assertNotIn("FIRST_API_KEY", contents)
+            self.assertIn("SECOND_API_KEY=second-value", contents)
+            self.assertEqual(stat.S_IMODE(secret_file.stat().st_mode), 0o600)
+
+    def test_delete_secret_rejects_invalid_and_missing_names(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            secret_file = Path(tmp) / "secrets.env"
+            set_secret(secret_file, "PRESENT_API_KEY", "present-value")
+            for name in ("invalid-name", "MISSING_API_KEY"):
+                with self.subTest(name=name), self.assertRaises(ValueError):
+                    delete_secret(secret_file, name)
+
     def test_secret_write_is_atomic_fsynced_and_private(self) -> None:
         fixture_value = "fixture-atomic-value"
         real_fsync = os.fsync

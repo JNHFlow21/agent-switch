@@ -30,3 +30,12 @@ agent-switch reconcile
 
 Agent Switch will recreate the entry from central config.
 
+## Agent Enrollment
+
+The macOS onboarding and Agent management page call the same `reconcile`
+operation as the CLI. Existing Claude and Hermes instruction text outside the
+Agent Switch managed block is preserved. Codex, MCP, and instruction target
+files are written atomically and backed up under `~/.config/agent-switch/backups/`.
+
+If enrollment does not converge, run `agent-switch agents --json` followed by
+`agent-switch doctor --json` and restore only the affected target backup.
