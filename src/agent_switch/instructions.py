@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -20,7 +21,15 @@ class InstructionTargets:
     hermes_soul: Path
 
 
+def _skill_paths(paths: AgentPaths) -> tuple[Path, Path]:
+    user_home = paths.codex_config.parent.parent
+    skill_hub = Path(os.environ.get("SKILL_HUB_HOME", user_home / "AgentWorkspace" / "skill-hub"))
+    return skill_hub.expanduser().resolve(), (user_home / ".agents" / "skills").resolve()
+
+
 def _core_policy(paths: AgentPaths) -> str:
+    skill_hub, global_skills = _skill_paths(paths)
+    skillctl = skill_hub / "scripts" / "skillctl"
     return f"""# Agent Switch Runtime Policy
 
 Agent Switch is the source of truth for local agent tools, MCP wrappers, and tool secrets on this machine. Skill Hub is the source of truth for local Skill source checkouts, version locks, and project activation profiles.
@@ -39,17 +48,18 @@ Secret and MCP rules:
 - Never print or paste secret values back to the user unless the user explicitly asks for a local-only diagnostic and redaction is impossible.
 
 Skill Hub rules:
-- Treat `/Users/USER/AgentWorkspace/skill-hub` as the local Skill control plane when it exists.
-- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl status` to inspect Skill source and profile state.
-- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl audit` for safe MCP / secret-name / Skill inventory reports; reports must list secret names only, never values.
-- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl profile-enable PROFILE SKILL --source SOURCE --path PATH` and `profile-disable PROFILE SKILL` to change per-project Skill activation.
-- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl sync PROFILE --prune` to activate project-local Skills through `.agents/skills` plus Codex / Claude / Hermes bridge directories and remove stale generated symlinks.
-- Use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl global-sync-official --prune` to refresh the global OpenAI official Skill baseline plus the explicit Skill Hub `global` profile.
+- Treat `{skill_hub}` as the optional local Skill control plane when it exists.
+- Use `{skillctl} status` to inspect Skill source and profile state.
+- Use `{skillctl} audit` for safe MCP / secret-name / Skill inventory reports; reports must list secret names only, never values.
+- A downloaded Skill is dormant by default. It must not become callable until the user explicitly enables it for a project profile or the `global` profile.
+- Use `{skillctl} profile-enable PROFILE SKILL --source SOURCE --path PATH` and `profile-disable PROFILE SKILL` to change per-project Skill activation.
+- Use `{skillctl} sync PROFILE --prune` to activate project-local Skills through `.agents/skills` plus Codex / Claude / Hermes bridge directories and remove stale generated symlinks.
+- Only when the user explicitly requests global activation, use `{skillctl} global-sync-official --prune` to refresh the global OpenAI official Skill baseline plus explicit `profiles/global.json` entries.
 - Keep third-party Skills in one checkout under Skill Hub `vendor/` and lock their commit or tag before syncing projects.
 - Keep self-authored Skills in Git-managed Skill Hub `own/` worktrees or dedicated GitHub repositories.
-- `/Users/USER/.agents/skills` may contain only Skill Hub managed OpenAI official Skills plus explicit `profiles/global.json` entries. The current non-OpenAI global exception is explicit non-OpenAI profile entries.
+- Treat `{global_skills}` as generated activation output, not as the warehouse. Do not copy dormant Skills there manually.
 - Do not run broad global installs such as `skills add ... -g --all` unless the user explicitly asks for global installation; prefer project profiles and symlinks.
-- If non-official and non-profile global Skills exist unexpectedly, use `/Users/USER/AgentWorkspace/skill-hub/scripts/skillctl global-sync-official --prune` to restore the allowed baseline before continuing.
+- If non-profile global Skills exist unexpectedly, use `{skillctl} global-sync-official --prune` to restore the managed baseline before continuing.
 - Never store credentials in Skill files, Skill references, Skill scripts, registry files, lock files, or audit reports.
 """
 
