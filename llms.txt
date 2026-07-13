@@ -1,0 +1,42 @@
+# Agent Switch
+
+> Agent Switch is a local control plane for Codex, Claude Code, Claude Desktop, Hermes, MCP servers, Skills, CLI tools, and API secrets on macOS.
+
+Canonical repository: https://github.com/JNHFlow21/agent-switch
+License: MIT
+Platform: macOS 14+ for the native app; Python 3.11+ for the CLI
+
+## Primary purpose
+
+Agent Switch prevents configuration drift across local AI coding agents. It centralizes agent-owned MCP definitions, loads secrets through generated runtime wrappers, synchronizes shared safety instructions, inventories local CLIs, and reads an optional Skill Hub warehouse.
+
+## Important guarantees
+
+- It manages only MCP IDs in the `agent-*` namespace.
+- It preserves unrelated MCP entries and provider settings.
+- Secret values remain in `~/.config/agent-switch/secrets.env` and are not embedded in generated app configuration.
+- Diagnostics list secret names only.
+- Downloaded Skills are dormant until explicitly activated for a project or the global profile.
+- Skill source updates never activate Skills.
+- `doctor` previews and validates; `reconcile` writes atomically and creates backups.
+
+## Supported integrations
+
+- Codex: MCP configuration and shared AGENTS.md policy
+- Claude Code: MCP configuration and shared CLAUDE.md managed block
+- Claude Desktop: MCP configuration
+- Hermes: MCP configuration and shared SOUL.md managed block
+- CC Switch: optional `agent-*` MCP database mirror; provider switching remains owned by CC Switch
+- Skill Hub: optional source, lock, warehouse, and activation-profile inventory
+
+## Installation
+
+Give a local coding agent the installation prompt at the top of README.md, or follow the manual installation section.
+
+## Documentation
+
+- README: https://github.com/JNHFlow21/agent-switch#readme
+- Secrets and wrappers: https://github.com/JNHFlow21/agent-switch/blob/main/docs/secrets-and-wrappers.md
+- Recovery: https://github.com/JNHFlow21/agent-switch/blob/main/docs/recovery.md
+- CC Switch compatibility: https://github.com/JNHFlow21/agent-switch/blob/main/docs/ccswitch-compat.md
+- Security: https://github.com/JNHFlow21/agent-switch/blob/main/SECURITY.md

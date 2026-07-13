@@ -5,11 +5,31 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "agent-switch"
 version = "0.1.3"
-description = "Local Agent Switch runtime for agent-owned MCP tools, wrappers, and drift repair."
+description = "Local control plane for AI agents, MCP servers, Skills, CLI tools, and secrets."
+readme = "README.md"
+license = {file = "LICENSE"}
+keywords = ["ai-agents", "mcp", "model-context-protocol", "codex", "claude-code", "hermes", "skills", "secrets", "macos"]
 requires-python = ">=3.11"
 dependencies = []
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: MacOS X",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: MacOS :: MacOS X",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+  "Topic :: Software Development :: Build Tools",
+  "Topic :: Utilities",
+]
 
 [project.urls]
+Homepage = "https://github.com/JNHFlow21/agent-switch"
+Documentation = "https://github.com/JNHFlow21/agent-switch#readme"
+Issues = "https://github.com/JNHFlow21/agent-switch/issues"
 Repository = "https://github.com/JNHFlow21/agent-switch"
 
 [project.scripts]

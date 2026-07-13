@@ -24,8 +24,12 @@ class DocsTests(unittest.TestCase):
         self.assertIn("secret delete", secrets)
         self.assertIn("without a system authentication dialog", secrets)
         self.assertNotIn("device-owner authentication", secrets)
-        self.assertIn("agent_switch clis --json", readme)
-        self.assertIn("agent_switch skills --json", readme)
+        self.assertIn("agent-switch clis", readme)
+        self.assertIn("agent-switch skills", readme)
+        self.assertLess(
+            readme.index("## 1. Install Agent Switch with your AI"),
+            readme.index("## 2. What Agent Switch does"),
+        )
         self.assertIn("agent-switch agents --json", recovery)
         self.assertIn("secret set --stdin", instructions)
         self.assertIn("secret get --fd", instructions)
