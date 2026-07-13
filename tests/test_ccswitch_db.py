@@ -4,6 +4,7 @@ import json
 import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 
 from agent_switch.ccswitch.db import CcSwitchDataError, CcSwitchDb, CcSwitchSchemaError
@@ -22,7 +23,7 @@ CREATE TABLE mcp_servers (
 
 
 def create_db(path: Path) -> None:
-    with sqlite3.connect(path) as conn:
+    with closing(sqlite3.connect(path)) as conn, conn:
         conn.executescript(SCHEMA)
         conn.execute(
             "INSERT INTO mcp_servers (id, name, server_config, tags) VALUES (?, ?, ?, ?)",
@@ -50,7 +51,7 @@ class CcSwitchDbTests(unittest.TestCase):
     def test_missing_schema_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             db_path = Path(tmp) / "bad.db"
-            with sqlite3.connect(db_path) as conn:
+            with closing(sqlite3.connect(db_path)) as conn, conn:
                 conn.execute("CREATE TABLE mcp_servers (id TEXT)")
             with self.assertRaises(CcSwitchSchemaError):
                 CcSwitchDb(db_path).list_mcp_servers()
@@ -59,7 +60,7 @@ class CcSwitchDbTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             db_path = Path(tmp) / "bad-json.db"
             create_db(db_path)
-            with sqlite3.connect(db_path) as conn:
+            with closing(sqlite3.connect(db_path)) as conn, conn:
                 conn.execute("UPDATE mcp_servers SET server_config = ? WHERE id = ?", ("{bad", "playwright"))
             with self.assertRaises(CcSwitchDataError):
                 CcSwitchDb(db_path).list_mcp_servers()

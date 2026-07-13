@@ -4,6 +4,7 @@ import json
 import sqlite3
 import tempfile
 import unittest
+from contextlib import closing
 from pathlib import Path
 
 from agent_switch.config.model import default_config
@@ -29,7 +30,7 @@ class ReconcileFixtureHomeTests(unittest.TestCase):
             root = Path(tmp)
             paths = paths_for(root / "agent", root / "user")
             paths.ccswitch_db.parent.mkdir(parents=True)
-            with sqlite3.connect(paths.ccswitch_db) as conn:
+            with closing(sqlite3.connect(paths.ccswitch_db)) as conn, conn:
                 conn.executescript(SCHEMA)
                 conn.execute(
                     "INSERT INTO mcp_servers (id, name, server_config, tags) VALUES (?, ?, ?, ?)",
@@ -70,7 +71,7 @@ class ReconcileFixtureHomeTests(unittest.TestCase):
             self.assertEqual(second_post.drift_count, 0)
             self.assertFalse(second_post.blocked)
             self.assertEqual(second_summary.changed, 0)
-            self.assertEqual(second_summary.unchanged, 12)
+            self.assertEqual(second_summary.unchanged, summary.changed + summary.unchanged)
 
             combined = "\n".join(
                 [

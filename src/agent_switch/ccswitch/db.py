@@ -2,9 +2,10 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from contextlib import contextmanager
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from agent_switch.config.model import ManagedApps
 
@@ -56,10 +57,19 @@ class CcSwitchDb:
     def _connect(self) -> sqlite3.Connection:
         return sqlite3.connect(self.path)
 
+    @contextmanager
+    def _connection(self) -> Iterator[sqlite3.Connection]:
+        conn = self._connect()
+        try:
+            with conn:
+                yield conn
+        finally:
+            conn.close()
+
     def schema_columns(self) -> set[str]:
         if not self.path.exists():
             raise CcSwitchSchemaError(f"CC Switch database not found: {self.path}")
-        with self._connect() as conn:
+        with self._connection() as conn:
             rows = conn.execute("PRAGMA table_info(mcp_servers)").fetchall()
         if not rows:
             raise CcSwitchSchemaError("mcp_servers table is missing")
@@ -73,7 +83,7 @@ class CcSwitchDb:
 
     def list_mcp_servers(self) -> dict[str, McpRow]:
         self.ensure_schema()
-        with self._connect() as conn:
+        with self._connection() as conn:
             rows = conn.execute(
                 """
                 SELECT id, name, server_config, enabled_claude, enabled_codex, enabled_hermes
@@ -110,7 +120,7 @@ class CcSwitchDb:
         if not server_id.startswith("agent-"):
             raise ValueError(f"refusing to write non-agent MCP id: {server_id}")
         self.ensure_schema()
-        with self._connect() as conn:
+        with self._connection() as conn:
             conn.execute(
                 """
                 INSERT OR REPLACE INTO mcp_servers (
