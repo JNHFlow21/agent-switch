@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import fcntl
 import os
 from pathlib import Path
@@ -23,6 +23,7 @@ class SecretReport:
     missing: tuple[str, ...]
     present_names: tuple[str, ...]
     stored_names: tuple[str, ...] = ()
+    consumers: dict[str, tuple[str, ...]] = field(default_factory=dict)
 
     def to_dict(self) -> dict[str, object]:
         return {
@@ -32,6 +33,7 @@ class SecretReport:
             "missing": list(self.missing),
             "presentNames": list(self.present_names),
             "storedNames": list(self.stored_names),
+            "consumers": {name: list(tool_ids) for name, tool_ids in sorted(self.consumers.items())},
         }
 
 
@@ -75,7 +77,7 @@ def _read_env_file_unlocked(env_path: Path) -> dict[str, str]:
         key, raw_value = line.split("=", 1)
         key = key.strip()
         value = _decode_env_value(raw_value)
-        if key:
+        if SECRET_NAME_RE.fullmatch(key):
             values[key] = value
     return values
 
@@ -122,6 +124,12 @@ def _validate_secret_value(value: str) -> None:
         raise ValueError(f"secret value exceeds the {MAX_SECRET_BYTES}-byte limit")
 
 
+def validate_secret(name: str, value: str) -> None:
+    if not SECRET_NAME_RE.fullmatch(name):
+        raise ValueError(f"invalid secret name: {name}")
+    _validate_secret_value(value)
+
+
 def _ensure_private_directory(path: Path) -> None:
     path.mkdir(mode=0o700, parents=True, exist_ok=True)
     path.chmod(0o700)
@@ -146,9 +154,7 @@ def _secret_lock(secret_path: Path, *, exclusive: bool = True) -> Iterator[None]
 
 
 def set_secret(path: str | Path, name: str, value: str) -> None:
-    if not SECRET_NAME_RE.fullmatch(name):
-        raise ValueError(f"invalid secret name: {name}")
-    _validate_secret_value(value)
+    validate_secret(name, value)
     secret_path = Path(path)
     _ensure_private_directory(secret_path.parent)
     with _secret_lock(secret_path):
@@ -209,10 +215,14 @@ def list_secret_names(path: str | Path) -> tuple[str, ...]:
 
 
 def check_secrets(config: AgentConfig) -> SecretReport:
-    required = tuple(sorted({name for tool in config.tools for name in tool.required_secrets}))
+    required = tuple(sorted({name for tool in config.tools if tool.enabled for name in tool.required_secrets}))
     values = read_env_file(config.secret_file)
     missing = tuple(name for name in required if not values.get(name))
     present = tuple(sorted(name for name in required if values.get(name)))
+    consumers = {
+        name: tuple(sorted(tool.id for tool in config.tools if tool.enabled and name in tool.required_secrets))
+        for name in required
+    }
     return SecretReport(
         path=config.secret_file,
         exists=config.secret_file.exists(),
@@ -220,4 +230,5 @@ def check_secrets(config: AgentConfig) -> SecretReport:
         missing=missing,
         present_names=present,
         stored_names=tuple(sorted(name for name, value in values.items() if value)),
+        consumers=consumers,
     )

@@ -71,6 +71,30 @@ class CliTests(unittest.TestCase):
                 )
             self.assertEqual(code, 0)
 
+    def test_doctor_strict_fails_for_drift_or_missing_required_secret(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            common = ["--home", str(root / "agent"), "--user-home", str(root / "user")]
+            clean = run_cli([*common, "doctor", "--strict", "--no-ccswitch"])
+            self.assertEqual(clean.returncode, 0, clean.stderr.decode(errors="replace"))
+
+            added = run_cli(
+                [
+                    *common,
+                    "mcp",
+                    "add",
+                    "strict-demo",
+                    "--command",
+                    "demo",
+                    "--secret",
+                    "STRICT_API_KEY",
+                ]
+            )
+            self.assertEqual(added.returncode, 0, added.stderr.decode(errors="replace"))
+            missing = run_cli([*common, "doctor", "--strict", "--no-ccswitch"])
+            self.assertEqual(missing.returncode, 1)
+            self.assertIn(b"STRICT_API_KEY", missing.stdout)
+
     def test_agents_json_reports_supported_targets(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             result = run_cli(
@@ -202,7 +226,7 @@ class CliTests(unittest.TestCase):
             self.assertNotIn(fixture_value, combined)
             self.assertEqual((Path(tmp) / "agent" / "secrets.env").read_bytes(), b"FD_API_KEY=" + fixture_value + b"\n")
 
-    def test_legacy_positional_value_warns_without_leaking_value(self) -> None:
+    def test_positional_secret_value_is_rejected_without_leaking_value(self) -> None:
         fixture_value = "fixture-legacy-value"
         with tempfile.TemporaryDirectory() as tmp:
             stdout = io.StringIO()
@@ -221,16 +245,19 @@ class CliTests(unittest.TestCase):
                     ]
                 )
             combined = stdout.getvalue() + stderr.getvalue()
-            self.assertEqual(code, 0)
-            self.assertIn("deprecated", stderr.getvalue())
-            self.assertIn("0.1.3", stderr.getvalue())
+            self.assertEqual(code, 2)
+            self.assertIn("not supported", stderr.getvalue())
             self.assertNotIn(fixture_value, combined)
 
     def test_secret_source_must_be_exactly_one(self) -> None:
         fixture_value = "fixture-conflict-value"
         with tempfile.TemporaryDirectory() as tmp:
             common = ["--home", str(Path(tmp) / "agent"), "--user-home", str(Path(tmp) / "user"), "secret", "set"]
-            for suffix in (["NO_SOURCE_KEY"], ["--stdin", "CONFLICT_KEY", fixture_value]):
+            cases = (
+                (["NO_SOURCE_KEY"], "exactly one secret source"),
+                (["--stdin", "CONFLICT_KEY", fixture_value], "positional secret values are not supported"),
+            )
+            for suffix, expected in cases:
                 with self.subTest(suffix=suffix):
                     stdout = io.StringIO()
                     stderr = io.StringIO()
@@ -238,7 +265,7 @@ class CliTests(unittest.TestCase):
                         code = main([*common, *suffix])
                     combined = stdout.getvalue() + stderr.getvalue()
                     self.assertEqual(code, 2)
-                    self.assertIn("exactly one secret source", stderr.getvalue())
+                    self.assertIn(expected, stderr.getvalue())
                     self.assertNotIn(fixture_value, combined)
 
     def test_secret_stdin_rejects_invalid_inputs_without_echoing_them(self) -> None:

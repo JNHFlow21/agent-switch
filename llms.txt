@@ -1,6 +1,6 @@
 # Agent Switch
 
-> Agent Switch is a local control plane for Codex, Claude Code, Claude Desktop, Hermes, MCP servers, Skills, CLI tools, and API secrets on macOS.
+> Agent Switch is a local control plane for registering supported MCPs once and storing their static credentials once across Codex, Claude Code, Claude Desktop, and Hermes on macOS.
 
 Canonical repository: https://github.com/JNHFlow21/agent-switch
 License: MIT
@@ -15,6 +15,9 @@ Agent Switch prevents configuration drift across local AI coding agents. It cent
 - It manages only MCP IDs in the `agent-*` namespace.
 - It preserves unrelated MCP entries and provider settings.
 - Secret values remain in `~/.config/agent-switch/secrets.env` and are not embedded in generated app configuration.
+- Each MCP wrapper receives only the credential names declared by that MCP.
+- New installations start with an empty MCP registry; adoption of existing native MCP entries is explicit and backed up.
+- Version 0.2 imports user-level command/stdio MCPs; remote HTTP/SSE/OAuth definitions are reported and preserved until a dedicated adapter is available.
 - Diagnostics list secret names only.
 - Downloaded Skills are dormant until explicitly activated for a project or the global profile.
 - Skill source updates never activate Skills.
@@ -32,6 +35,12 @@ Agent Switch prevents configuration drift across local AI coding agents. It cent
 ## Installation
 
 Give a local coding agent the installation prompt at the top of README.md, or follow the manual installation section.
+
+## MCP management
+
+- `agent-switch mcp import --dry-run --json`: inventory native MCPs without mutation
+- `agent-switch mcp import --adopt`: migrate and centrally manage existing MCPs
+- `agent-switch mcp add|set|enable|disable|remove|list`: manage the registry lifecycle
 
 ## Documentation
 

@@ -5,6 +5,10 @@
 
 import Foundation
 
+enum AppVersion {
+    static let current = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0.2.0"
+}
+
 enum L10n {
     // MARK: - Sidebar
     static let appName = String(localized: "Agent Switch", comment: "App name")
@@ -59,6 +63,30 @@ enum L10n {
     static let readyState = String(localized: "就绪", comment: "Tool badge")
     static let missingSecrets = String(localized: "缺少密钥", comment: "Tool badge")
     static let driftState = String(localized: "漂移", comment: "Tool badge: drift")
+    static let addMCP = String(localized: "添加 MCP", comment: "Add MCP")
+    static let editMCP = String(localized: "编辑 MCP", comment: "Edit MCP")
+    static let removeMCP = String(localized: "删除 MCP", comment: "Remove MCP")
+    static let removeMCPConfirmation = String(localized: "确认从统一注册表删除：", comment: "Remove MCP confirmation")
+    static let enableMCP = String(localized: "启用 MCP", comment: "Enable MCP")
+    static let disableMCP = String(localized: "停用 MCP", comment: "Disable MCP")
+    static let disabledMCP = String(localized: "已停用", comment: "Disabled MCP")
+    static let importMCPs = String(localized: "导入已有 MCP", comment: "Import MCPs")
+    static let importAndAdoptMCPs = String(localized: "备份并统一接管", comment: "Import and adopt MCPs")
+    static let importMCPConfirmation = String(localized: "Agent Switch 会扫描已安装 Agent 的 MCP，迁移内嵌密钥，备份原配置，再用统一注册表生成托管项。", comment: "Import MCP confirmation")
+    static let discoveredMCPs = String(localized: "发现 MCP", comment: "Import preview discovered count")
+    static let supportedMCPs = String(localized: "可接管 MCP", comment: "Import preview supported count")
+    static let skippedMCPs = String(localized: "保留未接管", comment: "Import preview skipped MCPs")
+    static let secretNamesOnly = String(localized: "密钥名称（不含值）", comment: "Import preview secret names")
+    static let none = String(localized: "无", comment: "Empty value")
+    static let saveMCP = String(localized: "保存 MCP", comment: "Save MCP")
+    static let mcpID = String(localized: "MCP ID，例如 filesystem", comment: "MCP id")
+    static let mcpName = String(localized: "显示名称", comment: "MCP name")
+    static let mcpCommand = String(localized: "启动命令", comment: "MCP command")
+    static let mcpDescription = String(localized: "说明（可选）", comment: "MCP description")
+    static let mcpArguments = String(localized: "参数（每行一个）", comment: "MCP arguments")
+    static let mcpRequiredSecrets = String(localized: "所需密钥名称（每行一个）", comment: "MCP secrets")
+    static let mcpEnvironment = String(localized: "普通环境变量（每行 NAME=VALUE；密钥不要填这里）", comment: "MCP environment")
+    static let mcpEditorNote = String(localized: "密钥值只在密钥页面保存；每个 MCP 运行时只能获得这里声明的密钥。", comment: "MCP editor note")
 
     // MARK: - Secrets
     static let secretsInventory = String(localized: "密钥清单", comment: "Page: Secrets")
@@ -95,6 +123,7 @@ enum L10n {
     static let notConfigured = String(localized: "尚未配置", comment: "Secret missing")
     static let requiredBadge = String(localized: "必需", comment: "Required badge")
     static let secretEditorNote = String(localized: "密钥值通过安全管道写入，不会进入命令参数或日志。", comment: "Secret editor note")
+    static let usedByMCP = String(localized: "授权给", comment: "Secret consumers")
     static let secretName = String(localized: "密钥名称，例如 FIRECRAWL_API_KEY", comment: "Secret name field")
     static let secretNameLabel = String(localized: "密钥名称", comment: "Existing secret name label")
     static let secretValue = String(localized: "密钥值", comment: "Secret value field")

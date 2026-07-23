@@ -13,6 +13,7 @@ from agent_switch.renderers.claude import render_claude_config
 from agent_switch.renderers.claude_desktop import render_claude_desktop_config
 from agent_switch.renderers.codex import render_codex_config
 from agent_switch.renderers.hermes import render_hermes_config
+from agent_switch.targets import detected_apps
 
 
 def _ccswitch_apps_match(observed, desired) -> bool:
@@ -34,7 +35,8 @@ def apply_reconcile(config: AgentConfig, paths: AgentPaths, *, include_ccswitch:
 
     changed = 0
     unchanged = 0
-    for result in write_instructions(paths):
+    active_apps = detected_apps(paths)
+    for result in write_instructions(paths, active_apps):
         changed += int(result.changed)
         unchanged += int(not result.changed)
 
@@ -49,6 +51,8 @@ def apply_reconcile(config: AgentConfig, paths: AgentPaths, *, include_ccswitch:
         ("hermes", paths.hermes_config, render_hermes_config),
     )
     for app, path, renderer in targets:
+        if app not in active_apps:
+            continue
         desired = desired_specs_for_app(config, app, paths.wrapper_dir)
         rendered = renderer(_read(path), desired)
         result = write_if_changed(path, rendered, backup_dir=paths.backup_dir)
@@ -58,7 +62,17 @@ def apply_reconcile(config: AgentConfig, paths: AgentPaths, *, include_ccswitch:
     if include_ccswitch and paths.ccswitch_db.exists():
         db = CcSwitchDb(paths.ccswitch_db)
         rows = db.list_mcp_servers()
+        enabled_ids = {
+            tool.id
+            for tool in config.tools
+            if tool.enabled and (tool.apps.claude or tool.apps.codex or tool.apps.hermes)
+        }
+        for server_id in sorted(row_id for row_id in rows if row_id.startswith("agent-") and row_id not in enabled_ids):
+            db.delete_agent_mcp_server(server_id)
+            changed += 1
         for tool in config.tools:
+            if not tool.enabled:
+                continue
             if not (tool.apps.claude or tool.apps.codex or tool.apps.hermes):
                 continue
             desired = mcp_spec_for_tool(tool, paths.wrapper_dir)

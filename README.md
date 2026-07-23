@@ -1,6 +1,6 @@
 # Agent Switch
 
-**One local control plane for AI coding agents, MCP servers, Skills, CLI tools, and secrets.**
+**One local control plane for MCP servers and MCP credentials across your AI coding agents.**
 
 [![macOS 14+](https://img.shields.io/badge/macOS-14%2B-111111?logo=apple)](https://www.apple.com/macos/)
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/)
@@ -21,8 +21,8 @@ Requirements:
 2. If the canonical checkout does not exist, clone the repository there. If it exists and is clean, update it with git pull --ff-only. Never overwrite uncommitted user work.
 3. Install or refresh the Python CLI from that checkout with pipx, and make sure `agent-switch` is on PATH.
 4. Run the complete Python test suite. Then build and install the native app by running `macos-app/AgentSwitch/install.sh` from the checkout.
-5. Run `agent-switch write-default-config`, then `agent-switch doctor`. Explain the planned managed changes briefly and run `agent-switch reconcile` only if Doctor reports no blocked target.
-6. Verify `agent-switch doctor --strict`, `agent-switch agents`, `agent-switch clis`, and `agent-switch skills` all run. Confirm that `~/Applications/Agent Switch.app` opens.
+5. Run `agent-switch write-default-config`, then `agent-switch mcp import --dry-run --json` to inventory existing MCPs without changing native configs. Do not adopt existing MCPs until the planned MCP IDs, target apps, and secret NAMES have been shown to me.
+6. Run `agent-switch doctor`. Explain the planned managed changes briefly and run `agent-switch reconcile` only if Doctor reports no blocked target. Verify `agent-switch doctor --strict`, `agent-switch agents`, `agent-switch mcp list`, and `agent-switch secret list` all run. Confirm that `~/Applications/Agent Switch.app` opens.
 7. Never ask me to paste an API key or token into chat. Never pass a secret as a command argument, print it, or write it to a project .env file. If a secret is needed, tell me to enter it in the Agent Switch app, or pipe it to `agent-switch secret set --stdin NAME` locally.
 8. Report exactly what was installed, which agents were enrolled, any missing secret NAMES only, and any action I still need to take. Do not report secret values.
 ```
@@ -46,6 +46,7 @@ PYTHONPATH=src python3 -m unittest discover -s tests/integration
 macos-app/AgentSwitch/install.sh
 
 agent-switch write-default-config
+agent-switch mcp import --dry-run --json
 agent-switch doctor
 agent-switch reconcile
 agent-switch doctor --strict
@@ -59,15 +60,17 @@ agent-switch doctor --strict
 
 AI tools usually keep separate copies of the same environment: one MCP list for Codex, another for Claude Code, another for Hermes, different instruction files, and secrets scattered across app configs. Those copies drift.
 
-**Agent Switch gives them one managed local environment.** You define a tool once, store each secret once, and reconcile the safe projection into every supported agent.
+**Agent Switch gives them one managed local environment.** You register an MCP once, store each credential once, choose its target agents, and reconcile a secret-free projection into every supported agent.
+
+New installations start with an empty registry. Agent Switch never assumes that every user wants the maintainer's preferred MCPs or credentials.
 
 ### Core features
 
 | Area | What Agent Switch manages |
 | --- | --- |
 | **Agents** | Detects and enrolls Codex, Claude Code, and Hermes; keeps one policy synchronized through their native instruction entry points. |
-| **MCP servers** | Defines `agent-*` MCP tools centrally, generates secret-loading wrappers, repairs drift, and preserves every unrelated MCP entry. |
-| **Secrets** | Stores tool credentials in one local mode-`0600` file; the macOS UI can add, update, reveal, hide, copy, and delete values. |
+| **MCP servers** | Imports existing MCPs; adds, edits, enables, disables, removes, and targets them centrally; then repairs drift while preserving unrelated entries. |
+| **Secrets** | Stores credentials once in a local mode-`0600` store and records which MCPs may consume each name. Every MCP receives only its declared credentials. |
 | **Skills** | Reads an optional Skill Hub warehouse and separates dormant, project-active, global, and missing Skills. Downloading or updating a Skill never activates it. |
 | **CLI tools** | Shows installed agent/tool CLIs, versions, package managers, executable paths, and Finder/file actions. |
 | **Health and sync** | `doctor` previews drift; `reconcile` applies atomic, backed-up changes; the app exposes the same check-and-sync workflow. |
@@ -120,6 +123,21 @@ agent-switch doctor --json
 # Repair managed MCP entries, wrappers, and shared instructions
 agent-switch reconcile
 
+# Inventory supported user-level stdio MCPs currently configured in supported agents
+agent-switch mcp import --dry-run --json
+
+# Back up native configs, migrate inline credentials, and adopt existing MCPs
+agent-switch mcp import --adopt
+
+# Manage the central registry
+agent-switch mcp list
+agent-switch mcp add filesystem --command npx \
+  --arg=-y --arg=@modelcontextprotocol/server-filesystem@1.0.0 \
+  --app codex --app claude
+agent-switch mcp disable filesystem
+agent-switch mcp enable filesystem
+agent-switch mcp remove filesystem
+
 # Inspect local integrations
 agent-switch agents
 agent-switch clis
@@ -142,14 +160,22 @@ Never substitute a literal secret for `secret-producing-command` in a recorded c
 Agent Switch is local-first, but it is not a password vault:
 
 - secret values are stored in `~/.config/agent-switch/secrets.env`, not in this repository, Git, app preferences, or generated agent configs;
+- generated wrappers parse the store as data rather than sourcing it as shell code;
+- a wrapper removes inherited sensitive variables and injects only the secret names declared by that MCP;
 - the secrets file and instruction files use restrictive local permissions;
 - secret writes use stdin or inherited file descriptors instead of process arguments;
 - secret reads refuse stdout, stderr, terminal, and aliased descriptors;
 - the macOS app reveals a value only after an explicit eye-button click, with no Touch ID dialog;
 - diagnostics and audits report secret **names**, never secret values;
 - wrappers fail closed when a required secret name is missing.
+- `doctor` warns when an `npx` MCP package is not pinned to a version.
 
-Read [Secrets and wrappers](docs/secrets-and-wrappers.md), [Recovery](docs/recovery.md), and [Security Policy](SECURITY.md) before production use.
+Read [MCP registry](docs/mcp-registry.md), [Secrets and wrappers](docs/secrets-and-wrappers.md), [Recovery](docs/recovery.md), and [Security Policy](SECURITY.md) before production use.
+
+Version 0.2 manages user-level, command/stdio MCP definitions. Native remote
+HTTP/SSE and OAuth-session migration, project-scoped MCP discovery, additional
+agent adapters, and signed distribution are tracked in the [roadmap](docs/roadmap.md)
+rather than being presented as finished features.
 
 ## Skill Hub: warehouse first, activation second
 

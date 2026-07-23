@@ -29,14 +29,19 @@ def _badge(label: str, tone: str = "neutral") -> str:
 
 
 def _tool_enabled_apps(tool: ToolSpec) -> list[str]:
+    if not tool.enabled:
+        return []
     return [APP_LABELS[app] for app in APP_NAMES if getattr(tool.apps, app)]
 
 
 def _route_roles(config: AgentConfig) -> dict[str, list[str]]:
     roles: dict[str, list[str]] = {tool.id: [] for tool in config.tools}
-    roles.setdefault(config.routes.search_default, []).append("Search default")
-    roles.setdefault(config.routes.x_read_default, []).append("X reader")
-    roles.setdefault(config.routes.x_read_fallback, []).append("X fallback")
+    if config.routes.search_default:
+        roles.setdefault(config.routes.search_default, []).append("Search default")
+    if config.routes.x_read_default:
+        roles.setdefault(config.routes.x_read_default, []).append("X reader")
+    if config.routes.x_read_fallback:
+        roles.setdefault(config.routes.x_read_fallback, []).append("X fallback")
     return roles
 
 
@@ -296,8 +301,8 @@ def render_dashboard(
   <div class="grid two">
     <section>
       <h2>Access Routes</h2>
-      <p>{_badge('Search default', 'route')} <strong>{_e(config.routes.search_default)}</strong></p>
-      <p>{_badge('X reader', 'route')} <strong>{_e(config.routes.x_read_default)}</strong> <span class="muted">fallback</span> <strong>{_e(config.routes.x_read_fallback)}</strong></p>
+      <p>{_badge('Search default', 'route')} <strong>{_e(config.routes.search_default or 'Not configured')}</strong></p>
+      <p>{_badge('X reader', 'route')} <strong>{_e(config.routes.x_read_default or 'Not configured')}</strong> <span class="muted">fallback</span> <strong>{_e(config.routes.x_read_fallback or 'Not configured')}</strong></p>
     </section>
     <section>
       <h2>Secrets Inventory</h2>

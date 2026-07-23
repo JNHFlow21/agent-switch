@@ -22,7 +22,7 @@ def load_config(config_file: str | Path, default_secret_file: str | Path) -> Age
         secret_file = (path.parent / secret_file).resolve()
     tools = tuple(ToolSpec.from_mapping(item) for item in raw.get("tools", []))
     config = AgentConfig(
-        tools=tools or default_config(secret_file).tools,
+        tools=tools,
         routes=RouteConfig.from_mapping(raw.get("routes")),
         secret_file=secret_file,
     )
@@ -31,5 +31,4 @@ def load_config(config_file: str | Path, default_secret_file: str | Path) -> Age
 
 
 def render_default_config(config: AgentConfig) -> str:
-    return json.dumps(config.to_public_dict(), ensure_ascii=False, indent=2, sort_keys=True) + "\n"
-
+    return json.dumps(config.to_config_dict(), ensure_ascii=False, indent=2, sort_keys=True) + "\n"

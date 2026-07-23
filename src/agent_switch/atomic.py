@@ -30,9 +30,9 @@ def sha256_text(text: str) -> str:
 
 
 def backup_path_for(path: Path, backup_dir: Path, source_digest: str | None = None) -> Path:
-    digest = sha256_bytes(str(path).encode("utf-8"))[:12]
-    if source_digest:
-        digest = source_digest[:12]
+    path_digest = sha256_bytes(str(path.resolve(strict=False)).encode("utf-8"))[:10]
+    content_digest = (source_digest or "new")[:12]
+    digest = f"{path_digest}-{content_digest}"
     name = f"{path.name}.{digest}.bak"
     return backup_dir / name
 
@@ -58,9 +58,11 @@ def write_if_changed(
         backup_path = None
         if target.exists() and backup_dir is not None:
             backup_root = Path(backup_dir)
-            backup_root.mkdir(parents=True, exist_ok=True)
+            backup_root.mkdir(mode=0o700, parents=True, exist_ok=True)
+            backup_root.chmod(0o700)
             backup_path = backup_path_for(target, backup_root, sha256_bytes(existing_data or b""))
             shutil.copy2(target, backup_path)
+            backup_path.chmod(0o600)
 
         fd, tmp_name = tempfile.mkstemp(prefix=f".{target.name}.", dir=str(target.parent))
         try:

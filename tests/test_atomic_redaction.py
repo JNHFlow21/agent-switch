@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+import stat
 from pathlib import Path
 
 from agent_switch.atomic import write_if_changed
@@ -24,6 +25,21 @@ class AtomicAndRedactionTests(unittest.TestCase):
             self.assertIsNotNone(third.backup_path)
             self.assertEqual(third.backup_path.read_text(), "one")
             self.assertIn("7692c3ad3540", third.backup_path.name)
+            self.assertEqual(stat.S_IMODE(backups.stat().st_mode), 0o700)
+            self.assertEqual(stat.S_IMODE(third.backup_path.stat().st_mode), 0o600)
+
+    def test_backup_name_distinguishes_same_named_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            backups = root / "backups"
+            left = root / "one" / "config.json"
+            right = root / "two" / "config.json"
+            for path in (left, right):
+                path.parent.mkdir()
+                path.write_text("same\n")
+            first = write_if_changed(left, "left\n", backup_dir=backups)
+            second = write_if_changed(right, "right\n", backup_dir=backups)
+            self.assertNotEqual(first.backup_path, second.backup_path)
 
     def test_redacts_secret_shapes_without_removing_names(self) -> None:
         text = "provider tavily API_KEY=sk-aaaaaaaa token=xai-bbbbbbbb"

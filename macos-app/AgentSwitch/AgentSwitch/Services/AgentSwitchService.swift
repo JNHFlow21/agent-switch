@@ -8,14 +8,16 @@ import Darwin
 
 actor AgentSwitchService {
     private let pythonPath: String
-    private let projectRoot: String
+    private let projectRoot: String?
+    private let cliPath: String?
 
     init() {
         self.projectRoot = Self.findProjectRoot()
         self.pythonPath = Self.findPythonPath()
+        self.cliPath = Self.findCLIPath()
     }
 
-    private static func findProjectRoot() -> String {
+    private static func findProjectRoot() -> String? {
         let candidates = [
             NSHomeDirectory() + "/Agent-Workspace/agent-switch",
             "/usr/local/share/agent-switch",
@@ -25,7 +27,19 @@ actor AgentSwitchService {
                 return path
             }
         }
-        return candidates[0]
+        return nil
+    }
+
+    private static func findCLIPath() -> String? {
+        let environment = ProcessInfo.processInfo.environment
+        let home = NSHomeDirectory()
+        let candidates = [
+            environment["AGENT_SWITCH_CLI"],
+            home + "/.local/bin/agent-switch",
+            "/opt/homebrew/bin/agent-switch",
+            "/usr/local/bin/agent-switch",
+        ].compactMap { $0 }
+        return candidates.first { FileManager.default.isExecutableFile(atPath: $0) }
     }
 
     private static func findPythonPath() -> String {
@@ -43,17 +57,24 @@ actor AgentSwitchService {
         return "/usr/bin/python3"
     }
 
-    func runDoctor() async throws -> DoctorReport {
-        let output = try await runCLI(["doctor", "--json", "--no-ccswitch"])
+    func runDoctor(includeCCSwitch: Bool = false) async throws -> DoctorReport {
+        var arguments = ["doctor", "--json"]
+        if !includeCCSwitch { arguments.append("--no-ccswitch") }
+        let output = try await runCLI(arguments)
         return try JSONDecoder().decode(DoctorReport.self, from: Data(output.utf8))
     }
 
-    func runReconcile() async throws -> String {
-        return try await runCLI(["reconcile", "--json", "--no-ccswitch"])
+    func runReconcile(includeCCSwitch: Bool = false) async throws -> String {
+        var arguments = ["reconcile", "--json"]
+        if !includeCCSwitch { arguments.append("--no-ccswitch") }
+        return try await runCLI(arguments)
     }
 
     func getConfig() async throws -> ConfigInfo {
         let configPath = NSHomeDirectory() + "/.config/agent-switch/config.json"
+        if !FileManager.default.fileExists(atPath: configPath) {
+            _ = try await runCLI(["write-default-config"])
+        }
         if let data = FileManager.default.contents(atPath: configPath) {
             return try JSONDecoder().decode(ConfigInfo.self, from: data)
         }
@@ -78,6 +99,50 @@ actor AgentSwitchService {
     func updateSkills() async throws -> SkillReport {
         _ = try await runCLI(["skills", "update", "--json"])
         return try await getSkills()
+    }
+
+    func saveMCP(
+        id: String,
+        name: String,
+        command: String,
+        args: [String],
+        secrets: [String],
+        env: [String: String],
+        apps: AppFlags,
+        description: String?,
+        enabled: Bool
+    ) async throws {
+        var arguments = ["mcp", "set", id, "--name", name, "--command", command]
+        arguments += args.map { "--arg=\($0)" }
+        arguments += secrets.map { "--secret=\($0)" }
+        arguments += env.sorted { $0.key < $1.key }.map { "--env=\($0.key)=\($0.value)" }
+        if apps.claude { arguments += ["--app", "claude"] }
+        if apps.claude_desktop { arguments += ["--app", "claude_desktop"] }
+        if apps.codex { arguments += ["--app", "codex"] }
+        if apps.hermes { arguments += ["--app", "hermes"] }
+        if let description, !description.isEmpty { arguments += ["--description", description] }
+        if !enabled { arguments.append("--disabled") }
+        arguments.append("--json")
+        _ = try await runCLI(arguments)
+    }
+
+    func removeMCP(id: String) async throws {
+        _ = try await runCLI(["mcp", "remove", id, "--json"])
+    }
+
+    func setMCPEnabled(id: String, enabled: Bool) async throws {
+        _ = try await runCLI(["mcp", enabled ? "enable" : "disable", id, "--json"])
+    }
+
+    func importMCPs(includeCCSwitch: Bool = false) async throws {
+        var arguments = ["mcp", "import", "--adopt", "--json"]
+        if !includeCCSwitch { arguments.append("--no-ccswitch") }
+        _ = try await runCLI(arguments)
+    }
+
+    func previewMCPImport() async throws -> MCPImportPreview {
+        let output = try await runCLI(["mcp", "import", "--dry-run", "--json"])
+        return try JSONDecoder().decode(MCPImportPreview.self, from: Data(output.utf8))
     }
 
     func setSecret(name: String, value: String) async throws {
@@ -113,10 +178,20 @@ actor AgentSwitchService {
             return try handle.readToEnd() ?? Data()
         }
         do {
-            let command = "exec \"$1\" -m agent_switch secret get --fd 3 \"$2\" 3>\"$3\""
+            let useInstalledCLI = projectRoot == nil && cliPath != nil
+            let executable = useInstalledCLI ? cliPath! : pythonPath
+            let command: String
+            let arguments: [String]
+            if useInstalledCLI {
+                command = "exec \"$1\" secret get --fd 3 \"$2\" 3>\"$3\""
+                arguments = ["-c", command, "agent-switch-secret", executable, name, fifo.path]
+            } else {
+                command = "exec \"$1\" -m agent_switch secret get --fd 3 \"$2\" 3>\"$3\""
+                arguments = ["-c", command, "agent-switch-secret", executable, name, fifo.path]
+            }
             _ = try await runProcess(
                 executable: "/bin/zsh",
-                arguments: ["-c", command, "agent-switch-secret", pythonPath, name, fifo.path]
+                arguments: arguments
             )
             let data = try await readTask.value
             guard let value = String(data: data, encoding: .utf8), !value.isEmpty else {
@@ -130,11 +205,10 @@ actor AgentSwitchService {
     }
 
     private func runCLI(_ arguments: [String], stdin: Data? = nil) async throws -> String {
-        try await runProcess(
-            executable: pythonPath,
-            arguments: ["-m", "agent_switch"] + arguments,
-            stdin: stdin
-        )
+        if projectRoot == nil, let cliPath {
+            return try await runProcess(executable: cliPath, arguments: arguments, stdin: stdin)
+        }
+        return try await runProcess(executable: pythonPath, arguments: ["-m", "agent_switch"] + arguments, stdin: stdin)
     }
 
     private func runProcess(executable: String, arguments: [String], stdin: Data? = nil) async throws -> String {
@@ -145,10 +219,12 @@ actor AgentSwitchService {
 
         process.executableURL = URL(fileURLWithPath: executable)
         process.arguments = arguments
-        process.currentDirectoryURL = URL(fileURLWithPath: projectRoot)
+        process.currentDirectoryURL = URL(fileURLWithPath: projectRoot ?? NSHomeDirectory())
 
         var environment = ProcessInfo.processInfo.environment
-        environment["PYTHONPATH"] = projectRoot + "/src"
+        if let projectRoot {
+            environment["PYTHONPATH"] = projectRoot + "/src"
+        }
         let home = NSHomeDirectory()
         environment["PATH"] = [
             home + "/.local/bin",

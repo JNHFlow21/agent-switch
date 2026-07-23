@@ -8,7 +8,7 @@ from agent_switch.atomic import WriteResult, write_if_changed
 from agent_switch.config.model import AgentConfig, ToolSpec
 from agent_switch.mcp.specs import wrapper_path_for
 from agent_switch.mcp.templates import render_wrapper_script
-from agent_switch.paths import AgentPaths
+from agent_switch.paths import AgentPaths, ensure_private_dir
 
 
 @dataclass(frozen=True)
@@ -36,8 +36,11 @@ def render_wrapper(tool: ToolSpec, secret_file: Path) -> str:
 
 def write_wrappers(config: AgentConfig, paths: AgentPaths) -> list[WriteResult]:
     results: list[WriteResult] = []
-    paths.wrapper_dir.mkdir(parents=True, exist_ok=True)
-    for tool in config.tools:
+    ensure_private_dir(paths.agent_home)
+    ensure_private_dir(paths.wrapper_dir)
+    enabled_tools = tuple(tool for tool in config.tools if tool.enabled)
+    desired_paths = {wrapper_path_for(tool, paths.wrapper_dir) for tool in enabled_tools}
+    for tool in enabled_tools:
         result = write_if_changed(
             wrapper_path_for(tool, paths.wrapper_dir),
             render_wrapper(tool, config.secret_file),
@@ -45,13 +48,18 @@ def write_wrappers(config: AgentConfig, paths: AgentPaths) -> list[WriteResult]:
             backup_dir=paths.backup_dir,
         )
         results.append(result)
+    for stale in sorted(paths.wrapper_dir.glob("mcp-*")):
+        if stale not in desired_paths and stale.is_file():
+            stale.unlink()
+            results.append(WriteResult(stale, True, None, ""))
     return results
 
 
 def wrapper_health(config: AgentConfig, wrapper_dir: Path) -> list[WrapperHealth]:
     health: list[WrapperHealth] = []
     for tool in config.tools:
+        if not tool.enabled:
+            continue
         path = wrapper_path_for(tool, wrapper_dir)
         health.append(WrapperHealth(tool.id, path, path.exists(), os.access(path, os.X_OK)))
     return health
-

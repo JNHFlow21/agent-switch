@@ -9,6 +9,12 @@ from agent_switch.config.model import AgentConfig
 from agent_switch.instructions import MANAGED_END, MANAGED_START
 from agent_switch.paths import AgentPaths
 from agent_switch.reconcile.doctor import run_doctor
+from agent_switch.targets import detected_apps
+
+
+def _command_detected(paths: AgentPaths, command: str) -> bool:
+    target_user_home = paths.codex_config.parent.parent.resolve()
+    return target_user_home == Path.home().resolve() and shutil.which(command) is not None
 
 
 @dataclass(frozen=True)
@@ -50,19 +56,15 @@ def _codex_managed(paths: AgentPaths) -> bool:
     return data.get("model_instructions_file") == str(paths.codex_instructions)
 
 
-def _command_detected(paths: AgentPaths, command: str) -> bool:
-    target_user_home = paths.codex_config.parent.parent.resolve()
-    return target_user_home == Path.home().resolve() and shutil.which(command) is not None
-
-
 def agent_statuses(config: AgentConfig, paths: AgentPaths) -> tuple[AgentStatus, ...]:
     report = run_doctor(config, paths, include_ccswitch=False)
     drift_targets = {change.target for change in report.changes}
+    detected_targets = detected_apps(paths)
     definitions = (
         (
             "codex",
             "Codex",
-            paths.codex_config.parent.exists() or paths.codex_config.exists() or _command_detected(paths, "codex"),
+            "codex" in detected_targets,
             _codex_managed(paths),
             paths.codex_config,
             paths.codex_instructions,
@@ -71,7 +73,7 @@ def agent_statuses(config: AgentConfig, paths: AgentPaths) -> tuple[AgentStatus,
         (
             "claude",
             "Claude Code",
-            paths.claude_global_instructions.parent.exists() or paths.claude_config.exists() or _command_detected(paths, "claude"),
+            "claude" in detected_targets,
             _contains_managed_block(paths.claude_global_instructions),
             paths.claude_config,
             paths.claude_global_instructions,
@@ -80,10 +82,7 @@ def agent_statuses(config: AgentConfig, paths: AgentPaths) -> tuple[AgentStatus,
         (
             "hermes",
             "Hermes",
-            paths.hermes_config.parent.exists()
-            or paths.hermes_config.exists()
-            or paths.hermes_soul.exists()
-            or _command_detected(paths, "hermes"),
+            "hermes" in detected_targets,
             _contains_managed_block(paths.hermes_soul),
             paths.hermes_config,
             paths.hermes_soul,

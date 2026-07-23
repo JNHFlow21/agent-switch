@@ -162,6 +162,12 @@ struct SecretsView: View {
                         .font(DSTypography.caption)
                         .foregroundStyle(DSColor.textMuted)
                 }
+                if let consumers = info.consumers?[name], !consumers.isEmpty {
+                    Text("\(L10n.usedByMCP): \(consumers.joined(separator: ", "))")
+                        .font(DSTypography.caption)
+                        .foregroundStyle(DSColor.textMuted)
+                        .lineLimit(2)
+                }
             }
 
             Spacer()
