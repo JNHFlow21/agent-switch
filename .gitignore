@@ -11,3 +11,11 @@ build/
 .firecrawl/
 *.egg-info/
 .coverage
+
+# Local credentials and runtime state must never enter the product repository.
+.env
+.env.*
+*.env
+!*.env.example
+secrets.env
+backups/

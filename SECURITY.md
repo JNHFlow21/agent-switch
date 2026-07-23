@@ -7,6 +7,9 @@ Please use [GitHub private vulnerability reporting](https://github.com/JNHFlow21
 ## Secret handling contract
 
 - Never commit `~/.config/agent-switch/secrets.env` or copy it into a repository.
+- The repository ignores `.env`, `*.env`, `secrets.env`, and `backups/`, but
+  ignore rules are only a last line of defense; credential values belong only
+  in the Agent Switch private store.
 - Never include secret values in issues, screenshots, logs, or diagnostic output.
 - Use the macOS app or `agent-switch secret set --stdin NAME` to write a value.
 - Use `agent-switch secret list` for audits; it returns names only.
