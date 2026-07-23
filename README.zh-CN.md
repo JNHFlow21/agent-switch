@@ -2,13 +2,29 @@
   <a href="README.md">English</a> · <strong>简体中文</strong>
 </p>
 
-# Agent Switch
+<p align="center">
+  <img src="docs/assets/agent-switch-icon.png" width="112" alt="Agent Switch 应用图标">
+</p>
 
-**每个 MCP 只定义一次，每个密钥只保存一次，再安全同步到所有支持的本地 AI Agent。**
+<h1 align="center">Agent Switch</h1>
 
-[![CI](https://github.com/JNHFlow21/agent-switch/actions/workflows/ci.yml/badge.svg)](https://github.com/JNHFlow21/agent-switch/actions/workflows/ci.yml)
-[![macOS 14+](https://img.shields.io/badge/macOS-14%2B-111111?logo=apple)](https://www.apple.com/macos/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
+<p align="center">
+  <strong>每个 MCP 只定义一次，每个密钥只保存一次，再安全同步到所有支持的本地 AI Agent。</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/JNHFlow21/agent-switch/actions/workflows/ci.yml"><img src="https://github.com/JNHFlow21/agent-switch/actions/workflows/ci.yml/badge.svg" alt="CI 状态"></a>
+  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-14%2B-111111?logo=apple" alt="需要 macOS 14 或更高版本"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111111.svg" alt="MIT 许可证"></a>
+</p>
+
+<p align="center">
+  <img src="docs/assets/agent-switch-dashboard.jpg" width="820" alt="Agent Switch 仪表板，展示健康状态、配置漂移、MCP 路由和密钥可用状态">
+</p>
+
+<p align="center">
+  <sub>真实 macOS 仪表板使用隔离的示例配置，展示健康状态、配置漂移、路由和密钥是否就绪，但绝不显示密钥值。</sub>
+</p>
 
 Codex、Claude Code、Claude Desktop 和 Hermes 都维护着各自的 MCP
 配置。把相同的服务器与密钥复制到每个客户端，不仅容易产生配置漂移，也会让密钥散落在多个文件中。

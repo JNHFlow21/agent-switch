@@ -2,13 +2,29 @@
   <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
 </p>
 
-# Agent Switch
+<p align="center">
+  <img src="docs/assets/agent-switch-icon.png" width="112" alt="Agent Switch app icon">
+</p>
 
-**Define each MCP once. Store each credential once. Project both into every supported local AI agent.**
+<h1 align="center">Agent Switch</h1>
 
-[![CI](https://github.com/JNHFlow21/agent-switch/actions/workflows/ci.yml/badge.svg)](https://github.com/JNHFlow21/agent-switch/actions/workflows/ci.yml)
-[![macOS 14+](https://img.shields.io/badge/macOS-14%2B-111111?logo=apple)](https://www.apple.com/macos/)
-[![License: MIT](https://img.shields.io/badge/license-MIT-111111.svg)](LICENSE)
+<p align="center">
+  <strong>Define each MCP once. Store each credential once. Project both into every supported local AI agent.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/JNHFlow21/agent-switch/actions/workflows/ci.yml"><img src="https://github.com/JNHFlow21/agent-switch/actions/workflows/ci.yml/badge.svg" alt="CI status"></a>
+  <a href="https://www.apple.com/macos/"><img src="https://img.shields.io/badge/macOS-14%2B-111111?logo=apple" alt="macOS 14 or newer"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-111111.svg" alt="MIT license"></a>
+</p>
+
+<p align="center">
+  <img src="docs/assets/agent-switch-dashboard.jpg" width="820" alt="Agent Switch dashboard showing health, configuration drift, MCP routes, and credential availability">
+</p>
+
+<p align="center">
+  <sub>The real macOS dashboard, shown with an isolated example configuration, exposes health, drift, routes, and credential availability—never credential values.</sub>
+</p>
 
 Codex, Claude Code, Claude Desktop, and Hermes each keep their own MCP
 configuration. Copying the same servers and credentials into every client
