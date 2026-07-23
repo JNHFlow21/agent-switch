@@ -1,3 +1,7 @@
+<p align="center">
+  <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
+</p>
+
 # Agent Switch
 
 **Define each MCP once. Store each credential once. Project both into every supported local AI agent.**
@@ -14,9 +18,10 @@ Agent Switch replaces those copies with one local registry, one private
 credential store, and deterministic per-agent projections.
 
 > [!IMPORTANT]
-> Agent Switch is **alpha software**. Today it is installed from source and the
-> macOS app is built locally; there is no signed, notarized public app, PyPI
-> package, or Homebrew formula yet. See the [roadmap](docs/roadmap.md).
+> Agent Switch is **alpha software**. The current installer builds from source
+> and requires Xcode. The intended public distribution is a Developer ID-signed,
+> notarized GitHub Release installed through Homebrew Cask. That release channel
+> is not available yet, so this README does not advertise a fake `brew` command.
 
 ## Quick start
 
@@ -26,74 +31,62 @@ credential store, and deterministic per-agent projections.
 - Git
 - Python 3.11 or newer
 - [`pipx`](https://pipx.pypa.io/)
-- Full Xcode with `xcodebuild` for the native app
+- Full Xcode with `xcodebuild`
 
-### Install with your coding agent
-
-This is the recommended alpha installation path. Paste the prompt below into
-Codex, Claude Code, or another local coding agent:
-
-```text
-Install and verify Agent Switch on this Mac instead of only explaining the steps.
-
-Repository: https://github.com/JNHFlow21/agent-switch
-Checkout: ~/Agent-Workspace/agent-switch
-
-1. Read the repository README and install script first. Verify macOS 14+, Git,
-   Python 3.11+, pipx, and full Xcode. Install only missing prerequisites.
-2. Clone the repository at the checkout path, or update it with `git pull
-   --ff-only` only when the existing worktree is clean. Never overwrite local work.
-3. Install the CLI from the checkout with pipx. Run both Python test suites,
-   then run `macos-app/AgentSwitch/install.sh`.
-4. Initialize the config and run `agent-switch mcp import --dry-run --json`.
-   Show me the detected MCP IDs, target apps, and required secret NAMES before
-   adopting or writing native agent configs.
-5. Run Doctor before Reconcile. Apply changes only when no target is blocked,
-   then verify `agent-switch doctor --strict`, `agent-switch agents`,
-   `agent-switch mcp list`, and `agent-switch secret list`.
-6. Never request, print, log, or pass a secret as a command argument. Never put
-   one in a project .env file. If a value is required, let me enter it in the
-   app or pipe it locally to `agent-switch secret set --stdin NAME`.
-
-Report what was installed, which agents were enrolled, missing secret NAMES
-only, and any remaining action. Confirm that ~/Applications/Agent Switch.app opens.
-```
-
-Your first successful setup should produce all three results:
-
-```text
-agent-switch --version        -> agent-switch 0.2.0
-agent-switch doctor --strict  -> exits successfully with no managed drift
-Native app                    -> opens from ~/Applications/Agent Switch.app
-```
-
-<details>
-<summary>Install manually from source</summary>
+Install missing command-line prerequisites with:
 
 ```bash
 brew install python pipx
-pipx ensurepath
-export PATH="$HOME/.local/bin:$PATH"
-
-mkdir -p "$HOME/Agent-Workspace"
-git clone https://github.com/JNHFlow21/agent-switch.git \
-  "$HOME/Agent-Workspace/agent-switch"
-cd "$HOME/Agent-Workspace/agent-switch"
-
-pipx install .
-PYTHONPATH=src python3 -m unittest discover -s tests
-PYTHONPATH=src python3 -m unittest discover -s tests/integration
-macos-app/AgentSwitch/install.sh
-
-agent-switch write-default-config
-agent-switch mcp import --dry-run --json
-agent-switch doctor
-agent-switch reconcile
-agent-switch doctor --strict
 ```
 
-Review the import preview before using `agent-switch mcp import --adopt` on
-existing agent configurations.
+### Install
+
+Run one verified source-install command:
+
+```bash
+git clone https://github.com/JNHFlow21/agent-switch.git && cd agent-switch && ./scripts/install.sh
+```
+
+The installer:
+
+1. verifies macOS, Python, pipx, and Xcode;
+2. installs the Python CLI in an isolated pipx environment;
+3. builds and installs the native app at `~/Applications/Agent Switch.app`;
+4. creates a neutral, empty Agent Switch config if none exists;
+5. opens the app without adopting MCPs or rewriting native agent configs.
+
+Expected first result:
+
+```text
+agent-switch --version  -> agent-switch 0.2.0
+Native app              -> opens from ~/Applications/Agent Switch.app
+```
+
+Then preview your existing user-level command/stdio MCPs:
+
+```bash
+agent-switch mcp import --dry-run --json
+agent-switch doctor
+```
+
+Review the detected MCP IDs, target apps, and required secret **names** before
+running `agent-switch mcp import --adopt` or `agent-switch reconcile`.
+
+<details>
+<summary>Why not npm, NPX, or a public Homebrew command?</summary>
+
+Agent Switch is a native macOS application with a Python CLI; Node.js is not
+part of its runtime. npm/NPX would add an unrelated dependency and still need
+to build or download the macOS app.
+
+The correct end-user channel is:
+
+```text
+signed + notarized release artifact -> GitHub Releases -> Homebrew Cask
+```
+
+Until that artifact exists, the source installer above is the shortest honest
+path. See the [roadmap](docs/roadmap.md).
 
 </details>
 
@@ -218,7 +211,7 @@ It does **not** yet provide:
 - project-scoped MCP discovery;
 - automatic support for unknown agents;
 - a signed and notarized downloadable app;
-- published PyPI or Homebrew distribution;
+- a published Homebrew Cask or Python package;
 - a password-manager or hardware-backed credential vault.
 
 These are limitations, not hidden features. Planned work lives in the
@@ -252,17 +245,12 @@ agent-switch reconcile
 See [Unified MCP Registry](docs/mcp-registry.md) for lifecycle commands and
 safe import behavior.
 
-## Update from source
+## Update
+
+From the cloned repository:
 
 ```bash
-cd "$HOME/Agent-Workspace/agent-switch"
-git pull --ff-only
-pipx uninstall agent-switch
-pipx install .
-PYTHONPATH=src python3 -m unittest discover -s tests
-PYTHONPATH=src python3 -m unittest discover -s tests/integration
-macos-app/AgentSwitch/install.sh
-agent-switch doctor
+git pull --ff-only && ./scripts/install.sh
 ```
 
 Agent Switch does not silently update itself, third-party CLIs, or Skill
