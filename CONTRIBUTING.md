@@ -13,6 +13,7 @@ PYTHONPATH=src python -m unittest discover -s tests
 PYTHONPATH=src python -m unittest discover -s tests/integration
 swift build --package-path macos-app/AgentSwitch
 python3 scripts/privacy_scan.py
+zsh -n scripts/install.sh
 ```
 
 ## Required boundaries

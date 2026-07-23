@@ -23,8 +23,9 @@ distribution.
    explicit ownership choice before adoption.
 3. Add adapters through a documented contract and fixture suite rather than
    guessing unknown agent configuration formats.
-4. Ship a signed and notarized macOS release, a verified installer, published
-   Python packages, and a Homebrew path.
+4. Ship a Developer ID-signed and notarized macOS release that packages the app
+   and CLI together, publish it through GitHub Releases, and make Homebrew Cask
+   the one-line end-user install path.
 5. Add complete English and Chinese localization plus a first-run wizard that
    previews targets, MCP IDs, and secret names before any write.
 6. Add a first-class backup browser and guided restore flow.

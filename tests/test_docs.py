@@ -10,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 class DocsTests(unittest.TestCase):
     def test_docs_reference_current_commands_and_boundaries(self) -> None:
         readme = (ROOT / "README.md").read_text()
+        readme_zh = (ROOT / "README.zh-CN.md").read_text()
         compat = (ROOT / "docs" / "ccswitch-compat.md").read_text()
         recovery = (ROOT / "docs" / "recovery.md").read_text()
         secrets = (ROOT / "docs" / "secrets-and-wrappers.md").read_text()
@@ -17,6 +18,14 @@ class DocsTests(unittest.TestCase):
         roadmap = (ROOT / "docs" / "roadmap.md").read_text()
         instructions = (ROOT / "src" / "agent_switch" / "instructions.py").read_text()
         self.assertIn("agent-switch doctor", readme)
+        self.assertIn("README.zh-CN.md", "\n".join(readme.splitlines()[:12]))
+        self.assertIn("README.md", "\n".join(readme_zh.splitlines()[:12]))
+        install_command = (
+            "git clone https://github.com/JNHFlow21/agent-switch.git && "
+            "cd agent-switch && ./scripts/install.sh"
+        )
+        self.assertIn(install_command, readme)
+        self.assertIn(install_command, readme_zh)
         self.assertIn("agent-*", compat)
         self.assertIn("CC Switch", compat)
         self.assertIn("agent-switch reconcile", recovery)
