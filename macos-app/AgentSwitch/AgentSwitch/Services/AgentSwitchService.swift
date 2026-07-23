@@ -18,16 +18,13 @@ actor AgentSwitchService {
     }
 
     private static func findProjectRoot() -> String? {
-        let candidates = [
-            NSHomeDirectory() + "/Agent-Workspace/agent-switch",
-            "/usr/local/share/agent-switch",
-        ]
-        for path in candidates {
-            if FileManager.default.fileExists(atPath: path + "/src/agent_switch/cli.py") {
-                return path
-            }
+        guard let path = ProcessInfo.processInfo.environment["AGENT_SWITCH_DEV_ROOT"],
+              !path.isEmpty,
+              FileManager.default.fileExists(atPath: path + "/src/agent_switch/cli.py")
+        else {
+            return nil
         }
-        return nil
+        return path
     }
 
     private static func findCLIPath() -> String? {

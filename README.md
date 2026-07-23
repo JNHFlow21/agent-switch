@@ -240,6 +240,11 @@ python -m unittest discover -s tests/integration
 
 The native application lives in [`macos-app/AgentSwitch`](macos-app/AgentSwitch) and targets macOS 14+.
 
+The app uses the installed `agent-switch` CLI by default, exactly like an end
+user installation. To run the app against a source checkout during development,
+launch it with `AGENT_SWITCH_DEV_ROOT=/absolute/path/to/agent-switch`; source
+code is never selected implicitly.
+
 ## License
 
 [MIT](LICENSE) © 2026 JNHFlow21
