@@ -34,7 +34,8 @@ class DashboardTests(unittest.TestCase):
 
             self.assertIn("Managed MCP Tools", html)
             self.assertIn("Target Coverage", html)
-            self.assertIn("agent-xcrawl", html)
+            self.assertIn("Not configured", html)
+            self.assertIn("Active MCP Tools</span><span class=\"value\">0", html)
             self.assertIn("No planned changes", html)
             self.assertIn("TAVILY_API_KEY", html)
             self.assertNotIn("secret-value", html)

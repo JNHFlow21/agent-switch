@@ -143,3 +143,10 @@ class CcSwitchDb:
                     bool(apps.hermes),
                 ),
             )
+
+    def delete_agent_mcp_server(self, server_id: str) -> None:
+        if not server_id.startswith("agent-"):
+            raise ValueError(f"refusing to delete non-agent MCP id: {server_id}")
+        self.ensure_schema()
+        with self._connection() as conn:
+            conn.execute("DELETE FROM mcp_servers WHERE id = ?", (server_id,))

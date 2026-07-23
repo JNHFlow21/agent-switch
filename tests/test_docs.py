@@ -13,6 +13,8 @@ class DocsTests(unittest.TestCase):
         compat = (ROOT / "docs" / "ccswitch-compat.md").read_text()
         recovery = (ROOT / "docs" / "recovery.md").read_text()
         secrets = (ROOT / "docs" / "secrets-and-wrappers.md").read_text()
+        registry = (ROOT / "docs" / "mcp-registry.md").read_text()
+        roadmap = (ROOT / "docs" / "roadmap.md").read_text()
         instructions = (ROOT / "src" / "agent_switch" / "instructions.py").read_text()
         self.assertIn("agent-switch doctor", readme)
         self.assertIn("agent-*", compat)
@@ -26,6 +28,11 @@ class DocsTests(unittest.TestCase):
         self.assertNotIn("device-owner authentication", secrets)
         self.assertIn("agent-switch clis", readme)
         self.assertIn("agent-switch skills", readme)
+        self.assertIn("agent-switch mcp import --adopt", readme)
+        self.assertIn("mcp add|set|enable|disable|remove|list", (ROOT / "llms.txt").read_text())
+        self.assertIn("injects only those declared values", secrets)
+        self.assertIn("Neutral first run", registry)
+        self.assertIn("Streamable HTTP", roadmap)
         self.assertLess(
             readme.index("## 1. Install Agent Switch with your AI"),
             readme.index("## 2. What Agent Switch does"),

@@ -22,16 +22,11 @@ Default path:
 ~/.config/agent-switch/secrets.env
 ```
 
-Example shape:
+Example shape (names vary with the MCP registry):
 
 ```bash
-TAVILY_API_KEY=...
-XCRAWL_API_KEY=...
-BIRDREAD_API_KEY=...
-X_API_KEY=...
-X_API_SECRET=...
-X_ACCESS_TOKEN=...
-X_ACCESS_TOKEN_SECRET=...
+FILESYSTEM_TOKEN=...
+SEARCH_API_KEY=...
 ```
 
 The status output reports missing secret names only. It never prints values.
@@ -48,9 +43,8 @@ agent-switch secret delete FIRECRAWL_API_KEY
 
 `--stdin` and `--fd` keep the value out of the Agent Switch process arguments.
 Replace `secret-producing-command` with a program that emits the value; never
-replace that placeholder with the value itself. The legacy
-`secret set NAME VALUE` form is deprecated in 0.1.3 and will be removed after
-this compatibility release.
+replace that placeholder with the value itself. Positional secret values are
+rejected so they cannot enter process arguments or shell history.
 
 Secret input must be non-empty, single-line UTF-8 no larger than 64 KiB. The
 CLI removes one final LF or CRLF from a producer. `--stdin` rejects interactive
@@ -109,9 +103,19 @@ manage it safely.
 
 Each wrapper:
 
-1. loads the secrets file if present;
-2. validates required secret names;
-3. prints missing names only;
-4. executes the configured MCP command.
+1. parses the secrets file as data; it never shell-sources the file;
+2. removes inherited sensitive environment variables;
+3. validates the secret names declared by that MCP;
+4. injects only those declared values into the child environment;
+5. expands declared `${SECRET_NAME}` placeholders in command arguments without
+   writing the value into the wrapper or native app config;
+6. prints missing names only;
+7. executes the configured MCP command.
+
+During native stdio import, credential-shaped environment values and values
+following flags such as `--api-key` or `--token` are moved into the private
+store. Their generated argument placeholder is kept in central config. Direct
+configuration rejects recognized credential-shaped literals in commands,
+arguments, or ordinary environment values.
 
 Wrappers are deterministic so `reconcile` can skip unchanged writes.

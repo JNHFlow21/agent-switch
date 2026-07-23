@@ -24,9 +24,21 @@ from agent_switch.renderers.common import RenderError
 from agent_switch.renderers.hermes import render_hermes_config
 from agent_switch.security.redaction import redact_mapping, redact_text
 from agent_switch.security.secrets import SecretReport, check_secrets
+from agent_switch.targets import detected_apps
 
 
 Renderer = Callable[[str, dict[str, dict[str, object]]], str]
+
+
+def _unpinned_npx_package(command: str, args: tuple[str, ...]) -> str | None:
+    if Path(command).name not in {"npx", "npx.cmd"}:
+        return None
+    package = next((arg for arg in args if not arg.startswith("-")), None)
+    if package is None:
+        return None
+    if package.startswith("@"):
+        return package if "@" not in package[1:] else None
+    return package if "@" not in package else None
 
 
 def _ccswitch_apps_match(observed, desired) -> bool:
@@ -109,6 +121,7 @@ def _check_text_target(target: str, path: Path, desired: str, changes: list[Plan
 def run_doctor(config: AgentConfig, paths: AgentPaths, *, include_ccswitch: bool = True) -> DoctorReport:
     findings: list[DoctorFinding] = []
     changes: list[PlanChange] = []
+    active_apps = detected_apps(paths)
 
     secret_report = check_secrets(config)
     if secret_report.missing:
@@ -120,25 +133,46 @@ def run_doctor(config: AgentConfig, paths: AgentPaths, *, include_ccswitch: bool
             )
         )
 
+    for tool in config.tools:
+        unpinned = _unpinned_npx_package(tool.command, tool.args)
+        if unpinned:
+            findings.append(
+                DoctorFinding(
+                    "warning",
+                    tool.id,
+                    f"npx package is not version-pinned: {unpinned}",
+                )
+            )
+
     for item in wrapper_health(config, paths.wrapper_dir):
         if not item.ok():
             changes.append(PlanChange("wrappers", item.path, "write", f"wrapper for {item.tool_id} is missing or not executable"))
+    desired_wrapper_paths = {
+        paths.wrapper_dir / tool.wrapper_name for tool in config.tools if tool.enabled
+    }
+    if paths.wrapper_dir.exists():
+        for stale in sorted(paths.wrapper_dir.glob("mcp-*")):
+            if stale.is_file() and stale not in desired_wrapper_paths:
+                changes.append(PlanChange("wrappers", stale, "delete", "stale or disabled MCP wrapper"))
 
-    _check_text_target("instructions.codex", paths.codex_instructions, codex_instructions(paths), changes)
-    _check_text_target("instructions.claude", paths.claude_instructions, claude_instructions(paths), changes)
-    _check_text_target("instructions.hermes", paths.hermes_instructions, hermes_instructions(paths), changes)
-    _check_text_target(
-        "instructions.claude_global",
-        paths.claude_global_instructions,
-        merge_managed_block(_read_text(paths.claude_global_instructions), claude_instructions(paths)),
-        changes,
-    )
-    _check_text_target(
-        "instructions.hermes_soul",
-        paths.hermes_soul,
-        merge_managed_block(_read_text(paths.hermes_soul), hermes_instructions(paths)),
-        changes,
-    )
+    if "codex" in active_apps:
+        _check_text_target("instructions.codex", paths.codex_instructions, codex_instructions(paths), changes)
+    if "claude" in active_apps:
+        _check_text_target("instructions.claude", paths.claude_instructions, claude_instructions(paths), changes)
+        _check_text_target(
+            "instructions.claude_global",
+            paths.claude_global_instructions,
+            merge_managed_block(_read_text(paths.claude_global_instructions), claude_instructions(paths)),
+            changes,
+        )
+    if "hermes" in active_apps:
+        _check_text_target("instructions.hermes", paths.hermes_instructions, hermes_instructions(paths), changes)
+        _check_text_target(
+            "instructions.hermes_soul",
+            paths.hermes_soul,
+            merge_managed_block(_read_text(paths.hermes_soul), hermes_instructions(paths)),
+            changes,
+        )
 
     target_specs = {
         "claude": (paths.claude_config, render_claude_config),
@@ -147,6 +181,8 @@ def run_doctor(config: AgentConfig, paths: AgentPaths, *, include_ccswitch: bool
         "hermes": (paths.hermes_config, render_hermes_config),
     }
     for app, (path, renderer) in target_specs.items():
+        if app not in active_apps:
+            continue
         _check_target(app, path, renderer, desired_specs_for_app(config, app, paths.wrapper_dir), findings, changes)
 
     if include_ccswitch:
@@ -154,7 +190,16 @@ def run_doctor(config: AgentConfig, paths: AgentPaths, *, include_ccswitch: bool
         if paths.ccswitch_db.exists():
             try:
                 rows = db.list_mcp_servers()
+                enabled_ids = {
+                    tool.id
+                    for tool in config.tools
+                    if tool.enabled and (tool.apps.claude or tool.apps.codex or tool.apps.hermes)
+                }
+                for server_id in sorted(row_id for row_id in rows if row_id.startswith("agent-") and row_id not in enabled_ids):
+                    changes.append(PlanChange("ccswitch", paths.ccswitch_db, "delete", f"remove stale MCP row {server_id}"))
                 for tool in config.tools:
+                    if not tool.enabled:
+                        continue
                     if not (tool.apps.claude or tool.apps.codex or tool.apps.hermes):
                         continue
                     desired = mcp_spec_for_tool(tool, paths.wrapper_dir)

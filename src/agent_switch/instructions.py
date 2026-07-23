@@ -114,30 +114,35 @@ def desired_instruction_targets(paths: AgentPaths) -> InstructionTargets:
     )
 
 
-def write_instructions(paths: AgentPaths) -> list[WriteResult]:
+def write_instructions(paths: AgentPaths, apps: set[str] | None = None) -> list[WriteResult]:
+    selected = apps or set()
     targets = desired_instruction_targets(paths)
-    results = [
-        write_if_changed(targets.codex, codex_instructions(paths), mode=0o600, backup_dir=paths.backup_dir),
-        write_if_changed(targets.claude, claude_instructions(paths), mode=0o600, backup_dir=paths.backup_dir),
-        write_if_changed(targets.hermes, hermes_instructions(paths), mode=0o600, backup_dir=paths.backup_dir),
-    ]
+    results: list[WriteResult] = []
+    if "codex" in selected:
+        results.append(write_if_changed(targets.codex, codex_instructions(paths), mode=0o600, backup_dir=paths.backup_dir))
+    if "claude" in selected:
+        results.append(write_if_changed(targets.claude, claude_instructions(paths), mode=0o600, backup_dir=paths.backup_dir))
+    if "hermes" in selected:
+        results.append(write_if_changed(targets.hermes, hermes_instructions(paths), mode=0o600, backup_dir=paths.backup_dir))
 
-    claude_current = targets.claude_global.read_text(encoding="utf-8") if targets.claude_global.exists() else ""
-    results.append(
-        write_if_changed(
-            targets.claude_global,
-            merge_managed_block(claude_current, claude_instructions(paths)),
-            backup_dir=paths.backup_dir,
+    if "claude" in selected:
+        claude_current = targets.claude_global.read_text(encoding="utf-8") if targets.claude_global.exists() else ""
+        results.append(
+            write_if_changed(
+                targets.claude_global,
+                merge_managed_block(claude_current, claude_instructions(paths)),
+                backup_dir=paths.backup_dir,
+            )
         )
-    )
 
-    hermes_current = targets.hermes_soul.read_text(encoding="utf-8") if targets.hermes_soul.exists() else ""
-    results.append(
-        write_if_changed(
-            targets.hermes_soul,
-            merge_managed_block(hermes_current, hermes_instructions(paths)),
-            mode=0o600,
-            backup_dir=paths.backup_dir,
+    if "hermes" in selected:
+        hermes_current = targets.hermes_soul.read_text(encoding="utf-8") if targets.hermes_soul.exists() else ""
+        results.append(
+            write_if_changed(
+                targets.hermes_soul,
+                merge_managed_block(hermes_current, hermes_instructions(paths)),
+                mode=0o600,
+                backup_dir=paths.backup_dir,
+            )
         )
-    )
     return results

@@ -358,7 +358,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.3;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jnhflow.AgentSwitch;
 				PRODUCT_NAME = "Agent Switch";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -383,7 +383,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.3;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jnhflow.AgentSwitch;
 				PRODUCT_NAME = "Agent Switch";
 				SWIFT_EMIT_LOC_STRINGS = YES;

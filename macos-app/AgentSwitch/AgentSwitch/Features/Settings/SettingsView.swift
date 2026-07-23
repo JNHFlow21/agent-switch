@@ -7,7 +7,6 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var appState: AppState
-    @AppStorage("autoRefreshEnabled") private var autoRefreshEnabled = true
     @AppStorage("includeCCSwitch") private var includeCCSwitch = false
 
     var body: some View {
@@ -28,7 +27,7 @@ struct SettingsView: View {
     private var pageBadges: [DSPageBadge] {
         [
             DSPageBadge(text: L10n.ready, tone: .good),
-            DSPageBadge(text: "v0.1.3", tone: .neutral),
+            DSPageBadge(text: "v\(AppVersion.current)", tone: .neutral),
         ]
     }
 
@@ -51,7 +50,7 @@ struct SettingsView: View {
             )
             DSMetricCard(
                 label: L10n.version,
-                value: "0.1.3",
+                value: AppVersion.current,
                 note: "github.com/JNHFlow21/agent-switch"
             )
         }
@@ -63,8 +62,6 @@ struct SettingsView: View {
                 Text(L10n.general)
                     .font(DSTypography.heading)
 
-                Toggle(L10n.autoRefreshOnLaunch, isOn: $autoRefreshEnabled)
-                    .toggleStyle(.switch)
                 Toggle(L10n.includeCCSwitch, isOn: $includeCCSwitch)
                     .toggleStyle(.switch)
             }
@@ -114,7 +111,7 @@ struct SettingsView: View {
                 Text(L10n.about)
                     .font(DSTypography.heading)
 
-                DSInfoRow(label: L10n.version, value: "0.1.3")
+                DSInfoRow(label: L10n.version, value: AppVersion.current)
                 Divider()
                 HStack(alignment: .firstTextBaseline, spacing: DSSpacing.lg) {
                     Text(L10n.repository)

@@ -37,6 +37,7 @@ struct SecretInfo: Codable {
     let missing: [String]
     let presentNames: [String]
     let storedNames: [String]
+    let consumers: [String: [String]]?
 }
 
 struct AgentReport: Codable {
@@ -115,7 +116,9 @@ struct ToolInfo: Codable, Identifiable {
     let requiredSecrets: [String]
     let apps: AppFlags
     let envNames: [String]
+    let env: [String: String]
     let description: String?
+    let enabled: Bool
 
     enum CodingKeys: String, CodingKey {
         case id
@@ -125,7 +128,9 @@ struct ToolInfo: Codable, Identifiable {
         case requiredSecrets
         case apps
         case envNames
+        case env
         case description
+        case enabled
     }
 
     init(from decoder: Decoder) throws {
@@ -136,8 +141,10 @@ struct ToolInfo: Codable, Identifiable {
         args = try container.decodeIfPresent([String].self, forKey: .args) ?? []
         requiredSecrets = try container.decodeIfPresent([String].self, forKey: .requiredSecrets) ?? []
         apps = try container.decodeIfPresent(AppFlags.self, forKey: .apps) ?? AppFlags()
-        envNames = try container.decodeIfPresent([String].self, forKey: .envNames) ?? []
+        env = try container.decodeIfPresent([String: String].self, forKey: .env) ?? [:]
+        envNames = try container.decodeIfPresent([String].self, forKey: .envNames) ?? env.keys.sorted()
         description = try container.decodeIfPresent(String.self, forKey: .description)
+        enabled = try container.decodeIfPresent(Bool.self, forKey: .enabled) ?? true
     }
 
     var displayCommand: String {
@@ -199,4 +206,20 @@ struct ReconcileSummary: Codable {
     let changed: Int
     let unchanged: Int
     let blocked: Int
+}
+
+struct MCPImportPreview: Codable {
+    let dryRun: Bool
+    let discovered: Int
+    let supported: Int
+    let imported: [String]
+    let merged: [String]
+    let secretNames: [String]
+    let skipped: [SkippedMCPImport]
+}
+
+struct SkippedMCPImport: Codable {
+    let app: String
+    let id: String
+    let reason: String
 }

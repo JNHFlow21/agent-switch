@@ -12,11 +12,16 @@ class AppState: ObservableObject {
     @Published var agents: [AgentInfo] = []
     @Published var clis: [CLIInfo] = []
     @Published var skillReport: SkillReport?
+    @Published var importPreview: MCPImportPreview?
     @Published var isLoading = false
     @Published var lastError: String?
     @Published var lastRefresh: Date?
 
     private let service = AgentSwitchService()
+
+    private var includeCCSwitch: Bool {
+        UserDefaults.standard.bool(forKey: "includeCCSwitch")
+    }
 
     var isHealthy: Bool {
         if lastError != nil {
@@ -42,7 +47,7 @@ class AppState: ObservableObject {
         lastError = nil
         do {
             config = try await service.getConfig()
-            report = try await service.runDoctor()
+            report = try await service.runDoctor(includeCCSwitch: includeCCSwitch)
             agents = try await service.getAgents()
             clis = try await service.getCLIs()
             skillReport = try await service.getSkills()
@@ -61,9 +66,9 @@ class AppState: ObservableObject {
         isLoading = true
         lastError = nil
         do {
-            _ = try await service.runReconcile()
+            _ = try await service.runReconcile(includeCCSwitch: includeCCSwitch)
             config = try await service.getConfig()
-            report = try await service.runDoctor()
+            report = try await service.runDoctor(includeCCSwitch: includeCCSwitch)
             agents = try await service.getAgents()
             clis = try await service.getCLIs()
             skillReport = try await service.getSkills()
@@ -79,7 +84,7 @@ class AppState: ObservableObject {
         lastError = nil
         do {
             try await service.setSecret(name: name, value: value)
-            report = try await service.runDoctor()
+            report = try await service.runDoctor(includeCCSwitch: includeCCSwitch)
             lastRefresh = Date()
             isLoading = false
             return true
@@ -105,7 +110,7 @@ class AppState: ObservableObject {
         lastError = nil
         do {
             try await service.deleteSecret(name: name)
-            report = try await service.runDoctor()
+            report = try await service.runDoctor(includeCCSwitch: includeCCSwitch)
             lastRefresh = Date()
             isLoading = false
             return true
@@ -125,6 +130,101 @@ class AppState: ObservableObject {
             isLoading = false
             return true
         } catch {
+            lastError = error.localizedDescription
+            isLoading = false
+            return false
+        }
+    }
+
+    func saveMCP(
+        id: String,
+        name: String,
+        command: String,
+        args: [String],
+        secrets: [String],
+        env: [String: String],
+        apps: AppFlags,
+        description: String?,
+        enabled: Bool
+    ) async -> Bool {
+        isLoading = true
+        lastError = nil
+        do {
+            try await service.saveMCP(
+                id: id,
+                name: name,
+                command: command,
+                args: args,
+                secrets: secrets,
+                env: env,
+                apps: apps,
+                description: description,
+                enabled: enabled
+            )
+            isLoading = false
+            await refresh()
+            return true
+        } catch {
+            lastError = error.localizedDescription
+            isLoading = false
+            return false
+        }
+    }
+
+    func removeMCP(id: String) async -> Bool {
+        isLoading = true
+        lastError = nil
+        do {
+            try await service.removeMCP(id: id)
+            isLoading = false
+            await refresh()
+            return true
+        } catch {
+            lastError = error.localizedDescription
+            isLoading = false
+            return false
+        }
+    }
+
+    func setMCPEnabled(id: String, enabled: Bool) async -> Bool {
+        isLoading = true
+        lastError = nil
+        do {
+            try await service.setMCPEnabled(id: id, enabled: enabled)
+            isLoading = false
+            await refresh()
+            return true
+        } catch {
+            lastError = error.localizedDescription
+            isLoading = false
+            return false
+        }
+    }
+
+    func importMCPs() async -> Bool {
+        isLoading = true
+        lastError = nil
+        do {
+            try await service.importMCPs(includeCCSwitch: includeCCSwitch)
+            isLoading = false
+            await refresh()
+            return true
+        } catch {
+            lastError = error.localizedDescription
+            isLoading = false
+            return false
+        }
+    }
+
+    func previewMCPImport() async -> Bool {
+        isLoading = true
+        lastError = nil
+        do {
+            importPreview = try await service.previewMCPImport()
+            isLoading = false
+            return true
+        } catch {
+            importPreview = nil
             lastError = error.localizedDescription
             isLoading = false
             return false

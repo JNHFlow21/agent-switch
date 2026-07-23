@@ -53,7 +53,7 @@ def build_server() -> StdioMCPServer:
     string_arg = {"type": "string"}
     return StdioMCPServer(
         name="agent-birdread",
-        version="0.1.3",
+        version="0.2.0",
         tools=[
             Tool(
                 name="read_x_post",

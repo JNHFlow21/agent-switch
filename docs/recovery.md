@@ -1,6 +1,8 @@
 # Recovery
 
 Agent Switch writes atomically and stores backups under the Agent Switch backup directory when an existing file changes.
+The backup directory is mode `0700` and backup files are mode `0600` because an
+adopted native MCP config may have contained an inline credential.
 
 ## Failed Native Config Write
 
@@ -39,3 +41,17 @@ files are written atomically and backed up under `~/.config/agent-switch/backups
 
 If enrollment does not converge, run `agent-switch agents --json` followed by
 `agent-switch doctor --json` and restore only the affected target backup.
+
+## MCP Import Or Adoption
+
+Always preview first:
+
+```bash
+agent-switch mcp import --dry-run --json
+```
+
+`mcp import --adopt` validates all detected source formats before removing any
+source entry. It then backs up each changed native file, migrates credential
+values to the private store without printing them, and reconciles managed
+projections. If adoption is interrupted, run `agent-switch doctor --json` and
+restore only the affected private backup before retrying.
