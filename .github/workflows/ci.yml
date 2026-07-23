@@ -54,3 +54,5 @@ jobs:
       - uses: actions/checkout@v7
       - run: zsh -n scripts/install.sh
       - run: test -x scripts/install.sh
+      - run: zsh -n scripts/build-release.sh
+      - run: test -x scripts/build-release.sh

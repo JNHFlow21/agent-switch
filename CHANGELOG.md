@@ -2,7 +2,7 @@
 
 All notable changes to Agent Switch are documented here.
 
-## 0.2.0 - Unreleased
+## 0.2.0 - 2026-07-23
 
 ### Added
 
@@ -14,6 +14,8 @@ All notable changes to Agent Switch are documented here.
 - Native import preview showing MCP IDs and secret names before adoption.
 - Credential-to-MCP consumer mapping in status and the Secret UI.
 - Detected-agent-only reconciliation for clean first-run behavior.
+- Reproducible universal macOS release packaging for GitHub Releases.
+- Homebrew Formula and Cask distribution through the project-owned Tap.
 
 ### Security
 
@@ -32,6 +34,7 @@ All notable changes to Agent Switch are documented here.
   source checkout when that CLI is available.
 - `doctor --strict` now fails for drift or missing required credentials as well
   as blocked targets.
+- The public alpha is ad-hoc signed and explicitly documented as not notarized.
 
 ## 0.1.3 - 2026-07-13
 
