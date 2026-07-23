@@ -18,53 +18,46 @@ Agent Switch replaces those copies with one local registry, one private
 credential store, and deterministic per-agent projections.
 
 > [!IMPORTANT]
-> Agent Switch is **alpha software**. The current installer builds from source
-> and requires Xcode. The intended public distribution is a Developer ID-signed,
-> notarized GitHub Release installed through Homebrew Cask. That release channel
-> is not available yet, so this README does not advertise a fake `brew` command.
+> Agent Switch is **alpha software**. The public app is ad-hoc signed and is not
+> Apple-notarized. The project-owned Homebrew Cask therefore removes Gatekeeper
+> quarantine after installation. Review the [public source](https://github.com/JNHFlow21/agent-switch)
+> and [release checksums](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.2.0)
+> before installing.
 
 ## Quick start
 
 ### Prerequisites
 
 - macOS 14 or newer
-- Git
-- Python 3.11 or newer
-- [`pipx`](https://pipx.pypa.io/)
-- Full Xcode with `xcodebuild`
-
-Install missing command-line prerequisites with:
-
-```bash
-brew install python pipx
-```
+- Homebrew 6.0 or newer
 
 ### Install
 
-Run one verified source-install command:
+Paste one verified command:
 
 ```bash
-git clone https://github.com/JNHFlow21/agent-switch.git && cd agent-switch && ./scripts/install.sh
+brew tap JNHFlow21/tap && brew trust --tap JNHFlow21/tap && brew install --cask JNHFlow21/tap/agent-switch
 ```
 
-The installer:
+Homebrew:
 
-1. verifies macOS, Python, pipx, and Xcode;
-2. installs the Python CLI in an isolated pipx environment;
-3. builds and installs the native app at `~/Applications/Agent Switch.app`;
-4. creates a neutral, empty Agent Switch config if none exists;
-5. opens the app without adopting MCPs or rewriting native agent configs.
+1. registers and explicitly trusts the project-owned Tap;
+2. installs the `agent-switch` CLI through `agent-switch-cli`;
+3. installs the universal native app at `/Applications/Agent Switch.app`;
+4. removes Gatekeeper quarantine because this alpha is not notarized;
+5. leaves MCP adoption and native agent configuration unchanged.
 
 Expected first result:
 
 ```text
 agent-switch --version  -> agent-switch 0.2.0
-Native app              -> opens from ~/Applications/Agent Switch.app
+Native app              -> /Applications/Agent Switch.app
 ```
 
-Then preview your existing user-level command/stdio MCPs:
+Open Agent Switch from Applications, or run:
 
 ```bash
+open -a "Agent Switch"
 agent-switch mcp import --dry-run --json
 agent-switch doctor
 ```
@@ -73,20 +66,20 @@ Review the detected MCP IDs, target apps, and required secret **names** before
 running `agent-switch mcp import --adopt` or `agent-switch reconcile`.
 
 <details>
-<summary>Why not npm, NPX, or a public Homebrew command?</summary>
+<summary>Why Homebrew instead of npm or NPX?</summary>
 
 Agent Switch is a native macOS application with a Python CLI; Node.js is not
 part of its runtime. npm/NPX would add an unrelated dependency and still need
 to build or download the macOS app.
 
-The correct end-user channel is:
+The current alpha distribution is:
 
 ```text
-signed + notarized release artifact -> GitHub Releases -> Homebrew Cask
+ad-hoc signed release artifact -> GitHub Releases -> project-owned Homebrew Cask
 ```
 
-Until that artifact exists, the source installer above is the shortest honest
-path. See the [roadmap](docs/roadmap.md).
+Developer ID signing and notarization remain the stable-release target. See the
+[roadmap](docs/roadmap.md).
 
 </details>
 
@@ -210,8 +203,8 @@ It does **not** yet provide:
 - migration for native HTTP/SSE transports or OAuth sessions;
 - project-scoped MCP discovery;
 - automatic support for unknown agents;
-- a signed and notarized downloadable app;
-- a published Homebrew Cask or Python package;
+- a Developer ID-signed and notarized downloadable app;
+- a published PyPI package;
 - a password-manager or hardware-backed credential vault.
 
 These are limitations, not hidden features. Planned work lives in the
@@ -247,10 +240,11 @@ safe import behavior.
 
 ## Update
 
-From the cloned repository:
+Homebrew installations:
 
 ```bash
-git pull --ff-only && ./scripts/install.sh
+brew update
+brew upgrade --cask JNHFlow21/tap/agent-switch
 ```
 
 Agent Switch does not silently update itself, third-party CLIs, or Skill
@@ -267,6 +261,15 @@ sources.
 - [Security Policy](SECURITY.md)
 
 ## Development
+
+The source installer remains available for contributors who have Python 3.11+,
+`pipx`, and full Xcode:
+
+```bash
+git clone https://github.com/JNHFlow21/agent-switch.git && cd agent-switch && ./scripts/install.sh
+```
+
+For an editable CLI environment:
 
 ```bash
 git clone https://github.com/JNHFlow21/agent-switch.git

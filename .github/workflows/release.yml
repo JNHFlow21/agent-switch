@@ -52,13 +52,13 @@ jobs:
           ## Install
 
           \`\`\`bash
-          brew tap JNHFlow21/tap && brew trust --tap JNHFlow21/tap && HOMEBREW_CASK_OPTS=--no-quarantine brew install --cask JNHFlow21/tap/agent-switch
+          brew tap JNHFlow21/tap && brew trust --tap JNHFlow21/tap && brew install --cask JNHFlow21/tap/agent-switch
           \`\`\`
 
           This build is ad-hoc signed and not notarized because the project does
-          not yet have an Apple Developer ID. The install command deliberately
-          disables Gatekeeper quarantine for this cask installation. Review the
-          public source and checksums before installing.
+          not yet have an Apple Developer ID. The project-owned Cask removes
+          Gatekeeper quarantine after installation. Review the public source and
+          checksums before installing.
           EOF
           gh release create "$GITHUB_REF_NAME" \
             dist/Agent-Switch-"$version"-macos-universal.zip \
