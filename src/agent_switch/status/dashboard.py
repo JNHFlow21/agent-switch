@@ -108,11 +108,12 @@ def _app_rows(config: AgentConfig, paths: AgentPaths, report: DoctorReport, incl
     for app in APP_NAMES:
         state, tone = _target_state(report, app)
         tools = [tool.id for tool in config.tools_for_app(app)]
+        tool_details = ", ".join(_e(tool) for tool in tools) if tools else '<span class="muted">none</span>'
         rows.append(
             "<tr>"
             f"<td><strong>{_e(APP_LABELS[app])}</strong><span class=\"muted block\">{_e(target_paths[app])}</span></td>"
             f"<td>{_badge(state, tone)}</td>"
-            f"<td>{', '.join(_e(tool) for tool in tools) if tools else '<span class=\"muted\">none</span>'}</td>"
+            f"<td>{tool_details}</td>"
             "</tr>"
         )
 
