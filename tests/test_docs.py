@@ -34,8 +34,8 @@ class DocsTests(unittest.TestCase):
         self.assertIn("Neutral first run", registry)
         self.assertIn("Streamable HTTP", roadmap)
         self.assertLess(
-            readme.index("## 1. Install Agent Switch with your AI"),
-            readme.index("## 2. What Agent Switch does"),
+            readme.index("## Quick start"),
+            readme.index("## What Agent Switch manages"),
         )
         self.assertIn("agent-switch agents --json", recovery)
         self.assertIn("secret set --stdin", instructions)
