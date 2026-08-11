@@ -5,6 +5,7 @@
 Canonical repository: https://github.com/JNHFlow21/agent-switch
 License: MIT
 Platform: macOS 14+ for the native app; Python 3.11+ for the CLI
+Interface languages: English and Simplified Chinese
 
 ## Primary purpose
 
@@ -21,6 +22,7 @@ Agent Switch prevents configuration drift across local AI coding agents. It cent
 - Diagnostics list secret names only.
 - Downloaded Skills are dormant until explicitly activated for a project or the global profile.
 - Skill source updates never activate Skills.
+- The native interface is localized in English and Simplified Chinese and follows the macOS language preference.
 - `doctor` previews and validates; `reconcile` writes atomically and creates backups.
 
 ## Supported integrations

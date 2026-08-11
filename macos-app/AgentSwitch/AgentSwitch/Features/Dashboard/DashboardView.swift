@@ -55,7 +55,7 @@ struct DashboardView: View {
             DSMetricCard(
                 label: L10n.runtimeState,
                 value: report.map { $0.blocked ? L10n.blocked : L10n.ready } ?? "—",
-                note: report.map { $0.driftCount == 0 ? L10n.noDriftDetected : L10n.reviewPlannedChanges } ?? "加载中..."
+                note: report.map { $0.driftCount == 0 ? L10n.noDriftDetected : L10n.reviewPlannedChanges } ?? L10n.loadingTools
             )
             DSMetricCard(
                 label: L10n.driftChanges,

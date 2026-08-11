@@ -154,7 +154,7 @@ private enum SkillFilter: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var label: String {
         switch self {
-        case .all: return "全部"
+        case .all: return L10n.allSkills
         case .dormant: return L10n.dormant
         case .project: return L10n.projectActive
         case .global: return L10n.globalActive
