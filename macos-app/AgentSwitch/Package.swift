@@ -8,7 +8,8 @@ let package = Package(
         .executableTarget(
             name: "AgentSwitch",
             path: "AgentSwitch",
-            exclude: ["Resources/Assets.xcassets"]
+            exclude: ["Resources/Assets.xcassets"],
+            resources: [.process("Resources/Localizable.xcstrings")]
         ),
     ]
 )

@@ -1,0 +1,2811 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "appName": {
+      "comment": "App name",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent Switch"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent Switch"
+          }
+        }
+      }
+    },
+    "dashboard": {
+      "comment": "Sidebar: Dashboard",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dashboard"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仪表板"
+          }
+        }
+      }
+    },
+    "agents": {
+      "comment": "Sidebar: Agents",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agents"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent 托管"
+          }
+        }
+      }
+    },
+    "clis": {
+      "comment": "Sidebar: CLI",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CLI Inventory"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CLI 管理"
+          }
+        }
+      }
+    },
+    "skills": {
+      "comment": "Sidebar: Skills",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill Library"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill 仓库"
+          }
+        }
+      }
+    },
+    "mcpTools": {
+      "comment": "Sidebar: MCP Tools",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MCP Tools"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MCP 工具"
+          }
+        }
+      }
+    },
+    "secrets": {
+      "comment": "Sidebar: Secrets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secrets"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥管理"
+          }
+        }
+      }
+    },
+    "settings": {
+      "comment": "Sidebar: Settings",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settings"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "设置"
+          }
+        }
+      }
+    },
+    "healthy": {
+      "comment": "Status: healthy",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Healthy"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运行正常"
+          }
+        }
+      }
+    },
+    "needsAttention": {
+      "comment": "Status: needs attention",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs attention"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要关注"
+          }
+        }
+      }
+    },
+    "checking": {
+      "comment": "Status: checking",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Checking"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查中"
+          }
+        }
+      }
+    },
+    "lastRefreshed": {
+      "comment": "Dashboard header",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Last refreshed: "
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上次刷新："
+          }
+        }
+      }
+    },
+    "blocked": {
+      "comment": "State: blocked",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blocked"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已阻塞"
+          }
+        }
+      }
+    },
+    "ready": {
+      "comment": "State: ready",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "就绪"
+          }
+        }
+      }
+    },
+    "drift": {
+      "comment": "Drift suffix",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "drift"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "漂移"
+          }
+        }
+      }
+    },
+    "runtimeState": {
+      "comment": "Metric: runtime state",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runtime status"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运行状态"
+          }
+        }
+      }
+    },
+    "driftChanges": {
+      "comment": "Metric: drift changes",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drift changes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "漂移变更"
+          }
+        }
+      }
+    },
+    "findingsLabel": {
+      "comment": "Metric: findings",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Findings"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查结果"
+          }
+        }
+      }
+    },
+    "secretsLabel": {
+      "comment": "Metric: secrets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret status"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥状态"
+          }
+        }
+      }
+    },
+    "noDriftDetected": {
+      "comment": "Metric note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No drift"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无漂移"
+          }
+        }
+      }
+    },
+    "reviewPlannedChanges": {
+      "comment": "Metric note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Review planned changes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请检查计划变更"
+          }
+        }
+      }
+    },
+    "allTargetsInSync": {
+      "comment": "Metric note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All targets in sync"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有目标已同步"
+          }
+        }
+      }
+    },
+    "runReconcileToFix": {
+      "comment": "Metric note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run reconcile to fix"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运行修复以解决"
+          }
+        }
+      }
+    },
+    "noIssuesFound": {
+      "comment": "Metric note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No issues"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无问题"
+          }
+        }
+      }
+    },
+    "errors": {
+      "comment": "Error count suffix",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "errors"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "个错误"
+          }
+        }
+      }
+    },
+    "allPresent": {
+      "comment": "Metric note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All present"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部就位"
+          }
+        }
+      }
+    },
+    "missing": {
+      "comment": "Missing suffix",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "missing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺失"
+          }
+        }
+      }
+    },
+    "loadFailed": {
+      "comment": "Dashboard error",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Load failed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加载失败"
+          }
+        }
+      }
+    },
+    "accessRoutes": {
+      "comment": "Section: Access Routes",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Access routes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "访问路由"
+          }
+        }
+      }
+    },
+    "searchDefault": {
+      "comment": "Route: search default",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Default search"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索默认"
+          }
+        }
+      }
+    },
+    "xReader": {
+      "comment": "Route: X reader",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "X reader"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "X 阅读器"
+          }
+        }
+      }
+    },
+    "xFallback": {
+      "comment": "Route: X fallback",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "X fallback"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "X 备用"
+          }
+        }
+      }
+    },
+    "findings": {
+      "comment": "Section: Findings",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Findings"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "检查发现"
+          }
+        }
+      }
+    },
+    "noFindingsHealthy": {
+      "comment": "Empty findings",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No findings. All managed resources are healthy."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无异常发现，所有托管资源运行正常。"
+          }
+        }
+      }
+    },
+    "plannedChanges": {
+      "comment": "Section: Planned Changes",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planned changes"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "计划变更"
+          }
+        }
+      }
+    },
+    "noPlannedChanges": {
+      "comment": "Empty changes",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No planned changes. Reconcile is currently a no-op."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无计划变更，修复同步当前为空操作。"
+          }
+        }
+      }
+    },
+    "managedMCPTools": {
+      "comment": "Page: Tools",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Managed MCP tools"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "托管 MCP 工具"
+          }
+        }
+      }
+    },
+    "loadingTools": {
+      "comment": "Loading state",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loading tools…"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "加载工具中…"
+          }
+        }
+      }
+    },
+    "targets": {
+      "comment": "Tool row: targets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target apps"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目标应用"
+          }
+        }
+      }
+    },
+    "secretsSection": {
+      "comment": "Tool row: secrets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Required secrets"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所需密钥"
+          }
+        }
+      }
+    },
+    "command": {
+      "comment": "Tool row: command",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Command"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "命令"
+          }
+        }
+      }
+    },
+    "readyState": {
+      "comment": "Tool badge",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ready"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "就绪"
+          }
+        }
+      }
+    },
+    "missingSecrets": {
+      "comment": "Tool badge",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Missing secrets"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺少密钥"
+          }
+        }
+      }
+    },
+    "driftState": {
+      "comment": "Tool badge: drift",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drift"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "漂移"
+          }
+        }
+      }
+    },
+    "addMCP": {
+      "comment": "Add MCP",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add MCP"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加 MCP"
+          }
+        }
+      }
+    },
+    "editMCP": {
+      "comment": "Edit MCP",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edit MCP"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑 MCP"
+          }
+        }
+      }
+    },
+    "removeMCP": {
+      "comment": "Remove MCP",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove MCP"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除 MCP"
+          }
+        }
+      }
+    },
+    "removeMCPConfirmation": {
+      "comment": "Remove MCP confirmation",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove from the central registry:"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认从统一注册表删除："
+          }
+        }
+      }
+    },
+    "enableMCP": {
+      "comment": "Enable MCP",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enable MCP"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启用 MCP"
+          }
+        }
+      }
+    },
+    "disableMCP": {
+      "comment": "Disable MCP",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disable MCP"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "停用 MCP"
+          }
+        }
+      }
+    },
+    "disabledMCP": {
+      "comment": "Disabled MCP",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disabled"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已停用"
+          }
+        }
+      }
+    },
+    "importMCPs": {
+      "comment": "Import MCPs",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Import existing MCPs"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "导入已有 MCP"
+          }
+        }
+      }
+    },
+    "importAndAdoptMCPs": {
+      "comment": "Import and adopt MCPs",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Back up and adopt"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "备份并统一接管"
+          }
+        }
+      }
+    },
+    "importMCPConfirmation": {
+      "comment": "Import MCP confirmation",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent Switch will scan installed agents for MCPs, migrate embedded secrets, back up native configs, and generate managed entries from the central registry."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent Switch 会扫描已安装 Agent 的 MCP，迁移内嵌密钥，备份原配置，再用统一注册表生成托管项。"
+          }
+        }
+      }
+    },
+    "discoveredMCPs": {
+      "comment": "Import preview discovered count",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Discovered MCPs"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "发现 MCP"
+          }
+        }
+      }
+    },
+    "supportedMCPs": {
+      "comment": "Import preview supported count",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supported MCPs"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "可接管 MCP"
+          }
+        }
+      }
+    },
+    "skippedMCPs": {
+      "comment": "Import preview skipped MCPs",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skipped and preserved"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保留未接管"
+          }
+        }
+      }
+    },
+    "secretNamesOnly": {
+      "comment": "Import preview secret names",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret names (values excluded)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥名称（不含值）"
+          }
+        }
+      }
+    },
+    "none": {
+      "comment": "Empty value",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "None"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无"
+          }
+        }
+      }
+    },
+    "saveMCP": {
+      "comment": "Save MCP",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save MCP"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存 MCP"
+          }
+        }
+      }
+    },
+    "mcpID": {
+      "comment": "MCP id",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MCP ID, for example filesystem"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MCP ID，例如 filesystem"
+          }
+        }
+      }
+    },
+    "mcpName": {
+      "comment": "MCP name",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Display name"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示名称"
+          }
+        }
+      }
+    },
+    "mcpCommand": {
+      "comment": "MCP command",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Launch command"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启动命令"
+          }
+        }
+      }
+    },
+    "mcpDescription": {
+      "comment": "MCP description",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Description (optional)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "说明（可选）"
+          }
+        }
+      }
+    },
+    "mcpArguments": {
+      "comment": "MCP arguments",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arguments (one per line)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "参数（每行一个）"
+          }
+        }
+      }
+    },
+    "mcpRequiredSecrets": {
+      "comment": "MCP secrets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Required secret names (one per line)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所需密钥名称（每行一个）"
+          }
+        }
+      }
+    },
+    "mcpEnvironment": {
+      "comment": "MCP environment",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regular environment variables (one NAME=VALUE per line; never put secrets here)"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "普通环境变量（每行 NAME=VALUE；密钥不要填这里）"
+          }
+        }
+      }
+    },
+    "mcpEditorNote": {
+      "comment": "MCP editor note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Store secret values only on the Secrets page. Each MCP receives only the secret names declared here."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥值只在密钥页面保存；每个 MCP 运行时只能获得这里声明的密钥。"
+          }
+        }
+      }
+    },
+    "secretsInventory": {
+      "comment": "Page: Secrets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret inventory"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥清单"
+          }
+        }
+      }
+    },
+    "secretManagementSubtitle": {
+      "comment": "Page: Secrets subtitle",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Safely add, inspect, and maintain local credentials"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安全地添加、查看和维护本机密钥"
+          }
+        }
+      }
+    },
+    "secretFile": {
+      "comment": "Metric: secret file",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret file"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥文件"
+          }
+        }
+      }
+    },
+    "found": {
+      "comment": "Secret file found",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Found"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已找到"
+          }
+        }
+      }
+    },
+    "missingFile": {
+      "comment": "Secret file missing",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "File missing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "文件缺失"
+          }
+        }
+      }
+    },
+    "present": {
+      "comment": "Metric: present",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configured"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已配置"
+          }
+        }
+      }
+    },
+    "ofRequired": {
+      "comment": "of N required prefix",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "of"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "共需"
+          }
+        }
+      }
+    },
+    "requiredSuffix": {
+      "comment": "required suffix",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "required"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "项"
+          }
+        }
+      }
+    },
+    "allSecretsConfigured": {
+      "comment": "Metric note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All secrets configured"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有密钥已配置"
+          }
+        }
+      }
+    },
+    "requiredSecrets": {
+      "comment": "Section: Required Secrets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Required secrets"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所需密钥列表"
+          }
+        }
+      }
+    },
+    "presentBadge": {
+      "comment": "Badge: present",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configured"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已配置"
+          }
+        }
+      }
+    },
+    "missingBadge": {
+      "comment": "Badge: missing",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Missing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺失"
+          }
+        }
+      }
+    },
+    "secretFileLocation": {
+      "comment": "Section: Secret File Location",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret file location"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥文件位置"
+          }
+        }
+      }
+    },
+    "revealInFinder": {
+      "comment": "Button: Reveal in Finder",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reveal in Finder"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "在访达中显示"
+          }
+        }
+      }
+    },
+    "secretsRuntimeNote": {
+      "comment": "Note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrapper scripts load secrets at runtime; values are never embedded in app configuration files."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥由 wrapper 脚本在运行时加载，不会嵌入应用配置文件中。"
+          }
+        }
+      }
+    },
+    "noSecretInfo": {
+      "comment": "Empty state title",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No secret information"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无密钥信息"
+          }
+        }
+      }
+    },
+    "runDoctorForSecrets": {
+      "comment": "Empty state subtitle",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Run Doctor to inspect secret status"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运行 Doctor 以检查密钥状态"
+          }
+        }
+      }
+    },
+    "stored": {
+      "comment": "Secret stored count",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "stored"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已保存"
+          }
+        }
+      }
+    },
+    "storedSecrets": {
+      "comment": "Metric: stored secrets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stored secrets"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已保存密钥"
+          }
+        }
+      }
+    },
+    "storedSecretsNote": {
+      "comment": "Stored secrets note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Includes secrets not currently referenced by an MCP"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "包括暂未被 MCP 引用的密钥"
+          }
+        }
+      }
+    },
+    "requiredSecretsNote": {
+      "comment": "Required secrets note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Declared by the current MCP configuration"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前 MCP 配置声明需要"
+          }
+        }
+      }
+    },
+    "allSecrets": {
+      "comment": "Section: all secrets",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All secrets"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部密钥"
+          }
+        }
+      }
+    },
+    "noStoredSecrets": {
+      "comment": "Empty secret list",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No secrets have been stored."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未保存任何密钥。"
+          }
+        }
+      }
+    },
+    "addSecret": {
+      "comment": "Add secret",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Add secret"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "添加密钥"
+          }
+        }
+      }
+    },
+    "updateSecret": {
+      "comment": "Update secret",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update secret"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新密钥"
+          }
+        }
+      }
+    },
+    "deleteSecret": {
+      "comment": "Delete secret",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete secret"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除密钥"
+          }
+        }
+      }
+    },
+    "deleteSecretConfirmation": {
+      "comment": "Delete secret confirmation",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delete local secret:"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "确认删除本机密钥："
+          }
+        }
+      }
+    },
+    "revealSecret": {
+      "comment": "Reveal secret",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reveal secret"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看密钥"
+          }
+        }
+      }
+    },
+    "hideSecret": {
+      "comment": "Hide secret",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hide secret"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "隐藏密钥"
+          }
+        }
+      }
+    },
+    "copySecret": {
+      "comment": "Copy secret",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy secret"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "复制密钥"
+          }
+        }
+      }
+    },
+    "configureSecret": {
+      "comment": "Configure missing secret",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configure secret"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置密钥"
+          }
+        }
+      }
+    },
+    "notConfigured": {
+      "comment": "Secret missing",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not configured"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "尚未配置"
+          }
+        }
+      }
+    },
+    "requiredBadge": {
+      "comment": "Required badge",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Required"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "必需"
+          }
+        }
+      }
+    },
+    "secretEditorNote": {
+      "comment": "Secret editor note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret values are written through a protected pipe and never enter command arguments or logs."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥值通过安全管道写入，不会进入命令参数或日志。"
+          }
+        }
+      }
+    },
+    "usedByMCP": {
+      "comment": "Secret consumers",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Granted to"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "授权给"
+          }
+        }
+      }
+    },
+    "secretName": {
+      "comment": "Secret name field",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret name, for example FIRECRAWL_API_KEY"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥名称，例如 FIRECRAWL_API_KEY"
+          }
+        }
+      }
+    },
+    "secretNameLabel": {
+      "comment": "Existing secret name label",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret name"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥名称"
+          }
+        }
+      }
+    },
+    "secretValue": {
+      "comment": "Secret value field",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret value"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥值"
+          }
+        }
+      }
+    },
+    "cancel": {
+      "comment": "Cancel",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancel"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取消"
+          }
+        }
+      }
+    },
+    "cliManagement": {
+      "comment": "Page: CLI management",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CLI inventory"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CLI 管理"
+          }
+        }
+      }
+    },
+    "cliManagementSubtitle": {
+      "comment": "CLI page subtitle",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspect installed agents and toolchain paths and versions"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "查看本机 Agent 与工具链的安装路径和版本"
+          }
+        }
+      }
+    },
+    "installed": {
+      "comment": "Installed status",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已安装"
+          }
+        }
+      }
+    },
+    "notInstalled": {
+      "comment": "Not installed status",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not installed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未安装"
+          }
+        }
+      }
+    },
+    "packageManager": {
+      "comment": "CLI package manager",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed via"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "安装方式"
+          }
+        }
+      }
+    },
+    "installedCLIs": {
+      "comment": "Installed CLI metric",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installed CLIs"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已安装 CLI"
+          }
+        }
+      }
+    },
+    "cliInventory": {
+      "comment": "CLI list",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CLI inventory"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CLI 清单"
+          }
+        }
+      }
+    },
+    "cliUpdateNote": {
+      "comment": "CLI update note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent Switch currently inventories versions and paths. Future updates will follow each CLI installation method."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "当前先统一盘点版本与路径；自动更新将按各 CLI 的安装方式执行。"
+          }
+        }
+      }
+    },
+    "skillWarehouse": {
+      "comment": "Page: Skill warehouse",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill library"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill 仓库"
+          }
+        }
+      }
+    },
+    "skillWarehouseSubtitle": {
+      "comment": "Skill page subtitle",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Downloads stay dormant until explicitly enabled for a project or globally"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "下载只入库；明确加载后才进入项目或全局"
+          }
+        }
+      }
+    },
+    "skillSources": {
+      "comment": "Skill sources",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sources"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "来源"
+          }
+        }
+      }
+    },
+    "skillProfiles": {
+      "comment": "Skill profiles",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Project profiles"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "项目配置"
+          }
+        }
+      }
+    },
+    "skillInventory": {
+      "comment": "Skill list",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill inventory"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skill 清单"
+          }
+        }
+      }
+    },
+    "dormant": {
+      "comment": "Dormant skill",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dormant"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "沉默"
+          }
+        }
+      }
+    },
+    "projectActive": {
+      "comment": "Project active skill",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Project"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "项目"
+          }
+        }
+      }
+    },
+    "globalActive": {
+      "comment": "Global active skill",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Global"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全局"
+          }
+        }
+      }
+    },
+    "missingSkill": {
+      "comment": "Missing skill",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Missing"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "缺失"
+          }
+        }
+      }
+    },
+    "searchSkills": {
+      "comment": "Search skills",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Search skills, sources, or projects"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "搜索 Skill、来源或项目"
+          }
+        }
+      }
+    },
+    "updateGitSources": {
+      "comment": "Update git skill sources",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Update Git sources"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新 Git 来源"
+          }
+        }
+      }
+    },
+    "updateGitSourcesNote": {
+      "comment": "Skill update note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Updates Git checkouts and version locks in Skill Hub without enabling any Skill."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只更新 Skill Hub 中的 Git 仓库和版本锁，不会自动启用任何 Skill。"
+          }
+        }
+      }
+    },
+    "noMatchingSkills": {
+      "comment": "No matching skills",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No matching Skills"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "没有匹配的 Skill"
+          }
+        }
+      }
+    },
+    "openFile": {
+      "comment": "Open file action",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open directly"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "直接打开"
+          }
+        }
+      }
+    },
+    "syncAndCheck": {
+      "comment": "Single toolbar synchronization action",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sync and check"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同步并检查"
+          }
+        }
+      }
+    },
+    "agentManagement": {
+      "comment": "Page: agent management",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent management"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent 托管"
+          }
+        }
+      }
+    },
+    "agentManagementSubtitle": {
+      "comment": "Agent page subtitle",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One policy, synchronized across every supported agent"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一套规则，同步到所有受支持的 Agent"
+          }
+        }
+      }
+    },
+    "managed": {
+      "comment": "Managed status",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "managed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已托管"
+          }
+        }
+      }
+    },
+    "detected": {
+      "comment": "Detected status",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "detected"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已发现"
+          }
+        }
+      }
+    },
+    "notDetected": {
+      "comment": "Not detected status",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not detected"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未发现"
+          }
+        }
+      }
+    },
+    "notManaged": {
+      "comment": "Not managed status",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not managed"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "未托管"
+          }
+        }
+      }
+    },
+    "synchronized": {
+      "comment": "Synchronized status",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In sync"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已同步"
+          }
+        }
+      }
+    },
+    "needsSync": {
+      "comment": "Needs sync status",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Needs sync"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要同步"
+          }
+        }
+      }
+    },
+    "manageDetectedAgents": {
+      "comment": "Manage supported agents",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manage and sync all supported agents"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "托管并同步所有支持的 Agent"
+          }
+        }
+      }
+    },
+    "manageDetectedAgentsNote": {
+      "comment": "Manage agents note",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Writes only to Agent Switch managed sections. Other settings are preserved and backed up."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "只写入 Agent Switch 管理区域；其他配置保持不变并自动备份。"
+          }
+        }
+      }
+    },
+    "howManagementWorks": {
+      "comment": "How management works heading",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How management works"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "规则如何生效"
+          }
+        }
+      }
+    },
+    "howManagementWorksBody": {
+      "comment": "How management works body",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent Switch maintains one shared policy and projects it into Codex AGENTS.md, Claude Code CLAUDE.md managed blocks, and Hermes SOUL.md managed blocks."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agent Switch 维护一份统一规则，再分别写入 Codex 的 AGENTS.md 入口、Claude Code 的 CLAUDE.md 管理区和 Hermes 的 SOUL.md 管理区。"
+          }
+        }
+      }
+    },
+    "welcomeHeading": {
+      "comment": "Onboarding heading",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let Agent Switch manage this environment"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "让 Agent Switch 接管这套环境"
+          }
+        }
+      }
+    },
+    "welcomeBody": {
+      "comment": "Onboarding body",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The following agents were detected. Agent Switch will synchronize shared instructions and MCPs while preserving and backing up existing configuration."
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已发现以下 Agent。开始托管后，Agent Switch 将同步统一指令和 MCP，并保留、备份现有配置。"
+          }
+        }
+      }
+    },
+    "startManagement": {
+      "comment": "Start management",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start management"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "开始托管"
+          }
+        }
+      }
+    },
+    "notNow": {
+      "comment": "Not now",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "暂不处理"
+          }
+        }
+      }
+    },
+    "general": {
+      "comment": "Settings: General",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "General"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "通用"
+          }
+        }
+      }
+    },
+    "autoRefreshOnLaunch": {
+      "comment": "Settings toggle",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refresh automatically at launch"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "启动时自动刷新"
+          }
+        }
+      }
+    },
+    "includeCCSwitch": {
+      "comment": "Settings toggle",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Include the CC Switch database in Doctor checks"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doctor 检查时包含 CC Switch 数据库"
+          }
+        }
+      }
+    },
+    "runtimePaths": {
+      "comment": "Settings: Runtime Paths",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runtime paths"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "运行时路径"
+          }
+        }
+      }
+    },
+    "config": {
+      "comment": "Settings label",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Configuration"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "配置文件"
+          }
+        }
+      }
+    },
+    "secretsPath": {
+      "comment": "Settings label",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Secret file"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "密钥文件"
+          }
+        }
+      }
+    },
+    "wrappers": {
+      "comment": "Settings label",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrapper scripts"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wrapper 脚本"
+          }
+        }
+      }
+    },
+    "backups": {
+      "comment": "Settings label",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Backup directory"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "备份目录"
+          }
+        }
+      }
+    },
+    "targetConfigs": {
+      "comment": "Settings: Target Configs",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Target configuration files"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目标配置文件"
+          }
+        }
+      }
+    },
+    "about": {
+      "comment": "Settings: About",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关于"
+          }
+        }
+      }
+    },
+    "version": {
+      "comment": "Settings label",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Version"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "版本"
+          }
+        }
+      }
+    },
+    "repository": {
+      "comment": "Settings label",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repository"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "仓库地址"
+          }
+        }
+      }
+    },
+    "actions": {
+      "comment": "Menu: Actions",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actions"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "操作"
+          }
+        }
+      }
+    },
+    "aboutAgentSwitch": {
+      "comment": "App menu: About Agent Switch",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "About Agent Switch"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "关于 Agent Switch"
+          }
+        }
+      }
+    },
+    "quitAgentSwitch": {
+      "comment": "App menu: Quit Agent Switch",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quit Agent Switch"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "退出 Agent Switch"
+          }
+        }
+      }
+    },
+    "window": {
+      "comment": "Window menu title",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Window"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "窗口"
+          }
+        }
+      }
+    },
+    "showAgentSwitch": {
+      "comment": "Window menu: Show Agent Switch",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Agent Switch"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "显示 Agent Switch"
+          }
+        }
+      }
+    },
+    "minimize": {
+      "comment": "Window menu: Minimize",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minimize"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最小化"
+          }
+        }
+      }
+    },
+    "allSkills": {
+      "comment": "Skill filter: All",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        },
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全部"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

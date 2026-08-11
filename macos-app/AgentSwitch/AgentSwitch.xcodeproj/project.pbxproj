@@ -24,6 +24,7 @@
 		A1000001000000000000000F /* AgentsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2000001000000000000000F; };
 		A10000010000000000000010 /* CLIsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000010; };
 		A10000010000000000000011 /* SkillsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000011; };
+		A10000010000000000000012 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = A20000010000000000000012; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,7 @@
 		A2000001000000000000000F /* AgentsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AgentsView.swift; sourceTree = "<group>"; };
 		A20000010000000000000010 /* CLIsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CLIsView.swift; sourceTree = "<group>"; };
 		A20000010000000000000011 /* SkillsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkillsView.swift; sourceTree = "<group>"; };
+		A20000010000000000000012 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		A30000010000000000000001 /* Agent Switch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Agent Switch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -179,6 +181,7 @@
 			isa = PBXGroup;
 			children = (
 				A2000001000000000000000D /* L10n.swift */,
+				A20000010000000000000012 /* Localizable.xcstrings */,
 				A2000001000000000000000E /* Assets.xcassets */,
 			);
 			path = Resources;
@@ -243,6 +246,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				"zh-Hans",
 				Base,
 			);
 			mainGroup = A40000010000000000000001;
@@ -261,6 +265,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A1000001000000000000000E /* Assets.xcassets in Resources */,
+				A10000010000000000000012 /* Localizable.xcstrings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

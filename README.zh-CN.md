@@ -19,7 +19,15 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/agent-switch-dashboard.jpg" width="820" alt="Agent Switch 仪表板，展示健康状态、配置漂移、MCP 路由和密钥可用状态">
+  <a href="https://github.com/JNHFlow21/agent-switch/stargazers"><img src="https://img.shields.io/github/stars/JNHFlow21/agent-switch?style=flat-square&label=stars" alt="GitHub stars"></a>
+  <a href="https://github.com/JNHFlow21/agent-switch/forks"><img src="https://img.shields.io/github/forks/JNHFlow21/agent-switch?style=flat-square&label=forks" alt="GitHub forks"></a>
+  <a href="https://github.com/JNHFlow21/agent-switch/commits/main"><img src="https://img.shields.io/github/commit-activity/t/JNHFlow21/agent-switch?style=flat-square&label=commits" alt="GitHub commit activity"></a>
+  <a href="https://github.com/JNHFlow21/agent-switch/releases"><img src="https://img.shields.io/github/downloads/JNHFlow21/agent-switch/total?style=flat-square&label=downloads" alt="Release downloads"></a>
+  <img src="https://visitor-badge.laobi.icu/badge?page_id=JNHFlow21.agent-switch&left_text=README%20visits" alt="README visit counter">
+</p>
+
+<p align="center">
+  <img src="docs/assets/agent-switch-dashboard-en.png" width="820" alt="Agent Switch 仪表板，展示健康状态、配置漂移、MCP 路由和密钥可用状态">
 </p>
 
 <p align="center">
@@ -37,6 +45,20 @@ Agent Switch 用一个本地 MCP 注册表、一个私密凭据存储和可重�
 > Apple 公证，因此项目自己的 Homebrew Cask 会在安装完成后移除 Gatekeeper
 > quarantine。安装前请先检查[公开源码](https://github.com/JNHFlow21/agent-switch)
 > 和[发行校验和](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.2.0)。
+
+
+## 项目数据
+
+| 公开指标 | 实时数据或最近一次维护者可见数据 |
+| --- | ---: |
+| Star / Fork / Commit / 发行下载量 | 见上方实时徽章 |
+| README 访问量 | 见上方公开计数器；可能包含机器人和重复访问 |
+| 仓库独立访客 | GitHub Traffic 最近 14 天滚动窗口内为 **0** |
+| 独立克隆者 | 最近 14 天滚动窗口内为 **11**（共 **12** 次克隆） |
+
+<sub>数据快照日期：2026-08-10。GitHub 只向仓库维护者提供克隆与独立访客数据，因此这里采用注明日期的透明快照，而不是需要私密 Token 的公开徽章。</sub>
+
+原生应用会跟随 macOS 的语言偏好，并完整提供**英文**与**简体中文**界面。
 
 ## 快速开始
 

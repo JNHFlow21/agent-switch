@@ -80,9 +80,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
         let appMenuItem = NSMenuItem()
         let appMenu = NSMenu(title: L10n.appName)
-        appMenu.addItem(NSMenuItem(title: "About \(L10n.appName)", action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)), keyEquivalent: ""))
+        appMenu.addItem(NSMenuItem(title: L10n.aboutAgentSwitch, action: #selector(NSApplication.orderFrontStandardAboutPanel(_:)), keyEquivalent: ""))
         appMenu.addItem(NSMenuItem.separator())
-        appMenu.addItem(NSMenuItem(title: "Quit \(L10n.appName)", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
+        appMenu.addItem(NSMenuItem(title: L10n.quitAgentSwitch, action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         appMenuItem.submenu = appMenu
         mainMenu.addItem(appMenuItem)
 
@@ -93,9 +93,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         mainMenu.addItem(actionsMenuItem)
 
         let windowMenuItem = NSMenuItem()
-        let windowMenu = NSMenu(title: "Window")
-        windowMenu.addItem(menuItem(title: "Show \(L10n.appName)", action: #selector(showMainWindowFromMenu), key: "0"))
-        windowMenu.addItem(NSMenuItem(title: "Minimize", action: #selector(NSWindow.miniaturize(_:)), keyEquivalent: "m"))
+        let windowMenu = NSMenu(title: L10n.window)
+        windowMenu.addItem(menuItem(title: L10n.showAgentSwitch, action: #selector(showMainWindowFromMenu), key: "0"))
+        windowMenu.addItem(NSMenuItem(title: L10n.minimize, action: #selector(NSWindow.miniaturize(_:)), keyEquivalent: "m"))
         windowMenuItem.submenu = windowMenu
         mainMenu.addItem(windowMenuItem)
         NSApp.windowsMenu = windowMenu

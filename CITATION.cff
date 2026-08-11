@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If Agent Switch supports your work, please cite the software using these metadata."
+title: "Agent Switch"
+type: software
+authors:
+  - name: "JNHFlow21"
+repository-code: "https://github.com/JNHFlow21/agent-switch"
+url: "https://github.com/JNHFlow21/agent-switch"
+license: MIT
+version: 0.2.0
+date-released: 2026-07-26
+keywords:
+  - MCP
+  - macOS
+  - AI agents
+  - secret management
+  - Codex
+  - Claude Code

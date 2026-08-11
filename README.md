@@ -19,7 +19,15 @@
 </p>
 
 <p align="center">
-  <img src="docs/assets/agent-switch-dashboard.jpg" width="820" alt="Agent Switch dashboard showing health, configuration drift, MCP routes, and credential availability">
+  <a href="https://github.com/JNHFlow21/agent-switch/stargazers"><img src="https://img.shields.io/github/stars/JNHFlow21/agent-switch?style=flat-square&label=stars" alt="GitHub stars"></a>
+  <a href="https://github.com/JNHFlow21/agent-switch/forks"><img src="https://img.shields.io/github/forks/JNHFlow21/agent-switch?style=flat-square&label=forks" alt="GitHub forks"></a>
+  <a href="https://github.com/JNHFlow21/agent-switch/commits/main"><img src="https://img.shields.io/github/commit-activity/t/JNHFlow21/agent-switch?style=flat-square&label=commits" alt="GitHub commit activity"></a>
+  <a href="https://github.com/JNHFlow21/agent-switch/releases"><img src="https://img.shields.io/github/downloads/JNHFlow21/agent-switch/total?style=flat-square&label=downloads" alt="Release downloads"></a>
+  <img src="https://visitor-badge.laobi.icu/badge?page_id=JNHFlow21.agent-switch&left_text=README%20visits" alt="README visit counter">
+</p>
+
+<p align="center">
+  <img src="docs/assets/agent-switch-dashboard-en.png" width="820" alt="Agent Switch dashboard showing health, configuration drift, MCP routes, and credential availability">
 </p>
 
 <p align="center">
@@ -39,6 +47,21 @@ credential store, and deterministic per-agent projections.
 > quarantine after installation. Review the [public source](https://github.com/JNHFlow21/agent-switch)
 > and [release checksums](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.2.0)
 > before installing.
+
+
+## Project activity
+
+| Public signal | Live or latest owner-visible value |
+| --- | ---: |
+| Stars / forks / commits / release downloads | Live badges above |
+| README visits | Public counter above; may include bots and repeat visits |
+| Unique repository visitors | **0** in the rolling 14-day GitHub Traffic window |
+| Unique Git cloners | **11** (**12** total clones) in the rolling 14-day window |
+
+<sub>Traffic snapshot: 2026-08-10. GitHub exposes clone and unique-visitor analytics only to maintainers, so those values are a dated, transparent snapshot rather than a token-backed public badge.</sub>
+
+The native app follows the macOS language preference and ships complete
+**English** and **Simplified Chinese** interface catalogs.
 
 ## Quick start
 
