@@ -58,6 +58,16 @@ Agent Switch 用一个本地 MCP 注册表、一个私密凭据存储和可重�
 
 <sub>数据快照日期：2026-08-10。GitHub 只向仓库维护者提供克隆与独立访客数据，因此这里采用注明日期的透明快照，而不是需要私密 Token 的公开徽章。</sub>
 
+### Star 增长曲线
+
+<p align="center">
+  <a href="https://www.star-history.com/#JNHFlow21/agent-switch&Date">
+    <img width="800" src="https://api.star-history.com/svg?repos=JNHFlow21/agent-switch&type=Date" alt="Agent Switch Star 增长曲线">
+  </a>
+</p>
+
+<sub>这是由 Star History 提供的动态白底增长曲线，读取 GitHub 公开 Star 数据；随着项目获得更多 Star，曲线会自动变得更完整。</sub>
+
 原生应用会跟随 macOS 的语言偏好，并完整提供**英文**与**简体中文**界面。
 
 ## 快速开始

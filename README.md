@@ -60,6 +60,16 @@ credential store, and deterministic per-agent projections.
 
 <sub>Traffic snapshot: 2026-08-10. GitHub exposes clone and unique-visitor analytics only to maintainers, so those values are a dated, transparent snapshot rather than a token-backed public badge.</sub>
 
+### Star history
+
+<p align="center">
+  <a href="https://www.star-history.com/#JNHFlow21/agent-switch&Date">
+    <img width="800" src="https://api.star-history.com/svg?repos=JNHFlow21/agent-switch&type=Date" alt="Agent Switch star history chart">
+  </a>
+</p>
+
+<sub>Live white-background chart from Star History. It follows public GitHub star data and becomes more informative as the repository grows.</sub>
+
 The native app follows the macOS language preference and ships complete
 **English** and **Simplified Chinese** interface catalogs.
 
