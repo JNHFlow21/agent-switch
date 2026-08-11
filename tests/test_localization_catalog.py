@@ -38,10 +38,12 @@ class LocalizationCatalogTests(unittest.TestCase):
         for readme in ("README.md", "README.zh-CN.md"):
             self.assertIn(image, (ROOT / readme).read_text())
 
-    def test_readmes_embed_the_live_star_history_chart(self) -> None:
-        chart = "https://api.star-history.com/svg?repos=JNHFlow21/agent-switch&type=Date"
+    def test_readmes_embed_the_privacy_safe_repository_metrics_chart(self) -> None:
+        chart = "https://raw.githubusercontent.com/JNHFlow21/agent-switch/metrics/repository-metrics.svg"
         for readme in ("README.md", "README.zh-CN.md"):
-            self.assertIn(chart, (ROOT / readme).read_text())
+            content = (ROOT / readme).read_text()
+            self.assertIn(chart, content)
+            self.assertNotIn("api.star-history.com", content)
 
 
 if __name__ == "__main__":
