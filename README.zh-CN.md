@@ -46,28 +46,6 @@ Agent Switch 用一个本地 MCP 注册表、一个私密凭据存储和可重�
 > quarantine。安装前请先检查[公开源码](https://github.com/JNHFlow21/agent-switch)
 > 和[发行校验和](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.2.0)。
 
-
-## 项目数据
-
-| 公开指标 | 实时数据或最近一次维护者可见数据 |
-| --- | ---: |
-| Star / Fork / Commit / 发行下载量 | 见上方实时徽章 |
-| README 访问量 | 见上方公开计数器；可能包含机器人和重复访问 |
-| 仓库独立访客 | GitHub Traffic 最近 14 天滚动窗口内为 **0** |
-| 独立克隆者 | 最近 14 天滚动窗口内为 **11**（共 **12** 次克隆） |
-
-<sub>数据快照日期：2026-08-10。GitHub 只向仓库维护者提供克隆与独立访客数据，因此这里采用注明日期的透明快照，而不是需要私密 Token 的公开徽章。</sub>
-
-### 仓库增长曲线
-
-<p align="center">
-  <a href="https://github.com/JNHFlow21/agent-switch/stargazers">
-    <img width="800" src="https://raw.githubusercontent.com/JNHFlow21/agent-switch/metrics/repository-metrics.svg" alt="Agent Switch 仓库增长与流量指标">
-  </a>
-</p>
-
-<sub>Star、Fork 与 Commit 会在每次获得新 Star 后及每周自动刷新。由于 GitHub 不允许 Actions Token 读取仓库 Traffic，流量卡片使用图中注明日期的仓库所有者聚合快照；README 中不嵌入任何长期 Token。</sub>
-
 原生应用会跟随 macOS 的语言偏好，并完整提供**英文**与**简体中文**界面。
 
 ## 快速开始
@@ -315,6 +293,27 @@ python -m unittest discover -s tests/integration
 
 原生应用位于 [`macos-app/AgentSwitch`](macos-app/AgentSwitch)，最低支持
 macOS 14。完整测试和隐私门禁见 [CONTRIBUTING.md](CONTRIBUTING.md)。
+
+## 项目数据
+
+| 公开指标 | 实时数据或最近一次维护者可见数据 |
+| --- | ---: |
+| Star / Fork / Commit / 发行下载量 | 见上方实时徽章 |
+| README 访问量 | 见上方公开计数器；可能包含机器人和重复访问 |
+| 仓库独立访客 | GitHub Traffic 最近 14 天滚动窗口内为 **0** |
+| 独立克隆者 | 最近 14 天滚动窗口内为 **11**（共 **12** 次克隆） |
+
+<sub>数据快照日期：2026-08-10。GitHub 只向仓库维护者提供克隆与独立访客数据，因此这里采用注明日期的透明快照，而不是需要私密 Token 的公开徽章。</sub>
+
+### 克隆趋势
+
+<p align="center">
+  <a href="https://github.com/JNHFlow21/agent-switch">
+    <img width="800" src="https://raw.githubusercontent.com/JNHFlow21/agent-switch/metrics/repository-metrics.svg" alt="Agent Switch 最近 14 天克隆趋势与仓库指标">
+  </a>
+</p>
+
+<sub>曲线展示 GitHub Traffic 最近 14 天滚动窗口内的累计克隆次数。Traffic 序列采用注明日期的仓库所有者聚合快照；侧边的 Star、Fork 与 Commit 会在每次获得新 Star 后及每周自动刷新。README 中不嵌入任何长期 Token。</sub>
 
 ## 许可证
 

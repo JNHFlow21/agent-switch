@@ -48,28 +48,6 @@ credential store, and deterministic per-agent projections.
 > and [release checksums](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.2.0)
 > before installing.
 
-
-## Project activity
-
-| Public signal | Live or latest owner-visible value |
-| --- | ---: |
-| Stars / forks / commits / release downloads | Live badges above |
-| README visits | Public counter above; may include bots and repeat visits |
-| Unique repository visitors | **0** in the rolling 14-day GitHub Traffic window |
-| Unique Git cloners | **11** (**12** total clones) in the rolling 14-day window |
-
-<sub>Traffic snapshot: 2026-08-10. GitHub exposes clone and unique-visitor analytics only to maintainers, so those values are a dated, transparent snapshot rather than a token-backed public badge.</sub>
-
-### Repository growth
-
-<p align="center">
-  <a href="https://github.com/JNHFlow21/agent-switch/stargazers">
-    <img width="800" src="https://raw.githubusercontent.com/JNHFlow21/agent-switch/metrics/repository-metrics.svg" alt="Agent Switch repository growth and traffic metrics">
-  </a>
-</p>
-
-<sub>Stars, forks, and commits refresh after every new star and once a week. Traffic cards use the dated aggregate owner snapshot shown in the chart because GitHub does not grant its Actions token access to repository Traffic. No long-lived token is embedded in this README.</sub>
-
 The native app follows the macOS language preference and ships complete
 **English** and **Simplified Chinese** interface catalogs.
 
@@ -333,6 +311,27 @@ python -m unittest discover -s tests/integration
 The native app lives in [`macos-app/AgentSwitch`](macos-app/AgentSwitch) and
 targets macOS 14+. See [CONTRIBUTING.md](CONTRIBUTING.md) for the complete test
 and privacy gate.
+
+## Project activity
+
+| Public signal | Live or latest owner-visible value |
+| --- | ---: |
+| Stars / forks / commits / release downloads | Live badges above |
+| README visits | Public counter above; may include bots and repeat visits |
+| Unique repository visitors | **0** in the rolling 14-day GitHub Traffic window |
+| Unique Git cloners | **11** (**12** total clones) in the rolling 14-day window |
+
+<sub>Traffic snapshot: 2026-08-10. GitHub exposes clone and unique-visitor analytics only to maintainers, so those values are a dated, transparent snapshot rather than a token-backed public badge.</sub>
+
+### Clone activity
+
+<p align="center">
+  <a href="https://github.com/JNHFlow21/agent-switch">
+    <img width="800" src="https://raw.githubusercontent.com/JNHFlow21/agent-switch/metrics/repository-metrics.svg" alt="Agent Switch rolling 14-day clone activity and repository metrics">
+  </a>
+</p>
+
+<sub>The curve shows cumulative clones inside GitHub's rolling 14-day Traffic window. The Traffic series is a dated aggregate owner snapshot; stars, forks, and commits in the side cards refresh after every new star and weekly. No long-lived token is embedded in this README.</sub>
 
 ## License
 

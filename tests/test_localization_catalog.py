@@ -45,6 +45,15 @@ class LocalizationCatalogTests(unittest.TestCase):
             self.assertIn(chart, content)
             self.assertNotIn("api.star-history.com", content)
 
+    def test_activity_chart_stays_near_the_end_after_product_documentation(self) -> None:
+        english = (ROOT / "README.md").read_text()
+        self.assertLess(english.index("## Development"), english.index("## Project activity"))
+        self.assertLess(english.index("## Project activity"), english.index("## License"))
+
+        chinese = (ROOT / "README.zh-CN.md").read_text()
+        self.assertLess(chinese.index("## 开发"), chinese.index("## 项目数据"))
+        self.assertLess(chinese.index("## 项目数据"), chinese.index("## 许可证"))
+
 
 if __name__ == "__main__":
     unittest.main()
