@@ -44,7 +44,7 @@ Agent Switch 用一个本地 MCP 注册表、一个私密凭据存储和可重�
 > Agent Switch 目前仍是 **Alpha 软件**。公开 App 使用 ad-hoc 签名，尚未经过
 > Apple 公证，因此项目自己的 Homebrew Cask 会在安装完成后移除 Gatekeeper
 > quarantine。安装前请先检查[公开源码](https://github.com/JNHFlow21/agent-switch)
-> 和[发行校验和](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.2.0)。
+> 和[发行校验和](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.3.0)。
 
 原生应用会跟随 macOS 的语言偏好，并完整提供**英文**与**简体中文**界面。
 
@@ -74,7 +74,7 @@ Homebrew 会：
 首次安装成功后应当看到：
 
 ```text
-agent-switch --version  -> agent-switch 0.2.0
+agent-switch --version  -> agent-switch 0.3.0
 原生应用                  -> /Applications/Agent Switch.app
 ```
 

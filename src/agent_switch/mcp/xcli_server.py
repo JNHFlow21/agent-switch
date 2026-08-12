@@ -47,7 +47,7 @@ def build_server() -> StdioMCPServer:
     string_arg = {"type": "string"}
     return StdioMCPServer(
         name="agent-xurl-fallback",
-        version="0.2.0",
+        version="0.3.0",
         tools=[
             Tool(
                 name="x_api_get_post",

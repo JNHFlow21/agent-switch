@@ -45,7 +45,7 @@ credential store, and deterministic per-agent projections.
 > Agent Switch is **alpha software**. The public app is ad-hoc signed and is not
 > Apple-notarized. The project-owned Homebrew Cask therefore removes Gatekeeper
 > quarantine after installation. Review the [public source](https://github.com/JNHFlow21/agent-switch)
-> and [release checksums](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.2.0)
+> and [release checksums](https://github.com/JNHFlow21/agent-switch/releases/tag/v0.3.0)
 > before installing.
 
 The native app follows the macOS language preference and ships complete
@@ -77,7 +77,7 @@ Homebrew:
 Expected first result:
 
 ```text
-agent-switch --version  -> agent-switch 0.2.0
+agent-switch --version  -> agent-switch 0.3.0
 Native app              -> /Applications/Agent Switch.app
 ```
 
