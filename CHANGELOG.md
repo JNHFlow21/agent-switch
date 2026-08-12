@@ -2,6 +2,25 @@
 
 All notable changes to Agent Switch are documented here.
 
+## 0.3.0 - 2026-08-11
+
+### Added
+
+- Complete English and Simplified Chinese native-app localization catalogs.
+- Real, sanitized product visuals and privacy-safe repository activity graphics.
+- Project metadata for software citation and answer-engine discovery.
+
+### Changed
+
+- Homebrew is now the canonical stranger-first install and update path.
+- README onboarding, trust boundaries, recovery guidance, and bilingual parity were refreshed.
+- Test credentials now use unmistakably synthetic, non-provider-shaped fixture values.
+
+### Security
+
+- Repository metrics keep owner-only Traffic collection inside GitHub Actions and publish only a generated aggregate image.
+- Release guidance continues to disclose ad-hoc signing and the absence of Apple notarization.
+
 ## 0.2.0 - 2026-07-23
 
 ### Added

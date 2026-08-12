@@ -47,13 +47,13 @@ class ReconcileFixtureHomeTests(unittest.TestCase):
             paths.secrets_file.write_text(
                 "\n".join(
                     [
-                        "TAVILY_API_KEY=sk-secret000000000000",
-                        "XCRAWL_API_KEY=sk-secret000000000001",
-                        "BIRDREAD_API_KEY=sk-secret000000000002",
-                        "X_API_KEY=sk-secret000000000003",
-                        "X_API_SECRET=sk-secret000000000004",
-                        "X_ACCESS_TOKEN=sk-secret000000000005",
-                        "X_ACCESS_TOKEN_SECRET=sk-secret000000000006",
+                        "TAVILY_API_KEY=fixture-tavily-secret",
+                        "XCRAWL_API_KEY=fixture-xcrawl-secret",
+                        "BIRDREAD_API_KEY=fixture-birdread-secret",
+                        "X_API_KEY=fixture-x-api-secret",
+                        "X_API_SECRET=fixture-x-api-signing-secret",
+                        "X_ACCESS_TOKEN=fixture-x-access-token",
+                        "X_ACCESS_TOKEN_SECRET=fixture-x-access-token-secret",
                     ]
                 )
             )

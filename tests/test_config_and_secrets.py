@@ -71,7 +71,8 @@ class ConfigAndSecretTests(unittest.TestCase):
     def test_secret_report_exposes_names_only(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             secret_file = Path(tmp) / "secrets.env"
-            secret_file.write_text("TAVILY_API_KEY=sk-secret000000000000\nUNUSED_API_KEY=fixture-unused\n")
+            secret_value = "fixture-tavily-secret-value"
+            secret_file.write_text(f"TAVILY_API_KEY={secret_value}\nUNUSED_API_KEY=fixture-unused\n")
             config = replace(
                 default_config(secret_file),
                 tools=(ToolSpec(id="agent-tavily", name="Tavily", command="tool", required_secrets=("TAVILY_API_KEY", "XCRAWL_API_KEY")),),
@@ -81,7 +82,7 @@ class ConfigAndSecretTests(unittest.TestCase):
             self.assertIn("TAVILY_API_KEY", report.stored_names)
             self.assertIn("UNUSED_API_KEY", report.stored_names)
             self.assertNotIn("UNUSED_API_KEY", report.present_names)
-            self.assertNotIn("sk-secret", json.dumps(report.to_dict()))
+            self.assertNotIn(secret_value, json.dumps(report.to_dict()))
             self.assertIn("XCRAWL_API_KEY", report.missing)
 
     def test_non_secret_environment_round_trips_but_public_view_lists_names_only(self) -> None:
