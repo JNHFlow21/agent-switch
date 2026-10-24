@@ -34,32 +34,16 @@ def _core_policy(paths: AgentPaths) -> str:
 
 Agent Switch is the source of truth for local agent tools, MCP wrappers, and tool secrets on this machine. Skill Hub is the source of truth for local Skill source checkouts, version locks, and project activation profiles.
 
-Secret and MCP rules:
-- Store API keys, tokens, and MCP credentials only in `{paths.secrets_file}`.
-- Do not write secrets into project `.env` files, README files, native app configs, chat transcripts, shell history, or logs.
-- Pipe a secret-producing command into `agent-switch secret set --stdin NAME`, or use `agent-switch secret set --fd N NAME`; never pass the value as a command argument.
-- Use `agent-switch secret get --fd N NAME` only with an inherited non-TTY descriptor that is not routed to stdout or stderr.
-- Use `agent-switch secret list` to inspect available secret names without revealing values.
-- Use `agent-switch doctor` before changing MCP/tool configuration.
-- Use `agent-switch reconcile` to regenerate native app MCP configuration.
-- Treat `{paths.config_file}` as the central tool and route configuration.
-- Generated MCP entries and wrappers must stay in the `agent-*` namespace.
-- If a requested provider or tool needs a new secret, add only the secret name to config and write the value through Agent Switch.
-- Never print or paste secret values back to the user unless the user explicitly asks for a local-only diagnostic and redaction is impossible.
+Secrets and MCP:
+- Secrets live only in `{paths.secrets_file}`; never in project `.env`, README, native app configs, chats, shell history, or logs. Never print a secret value unless the user explicitly asks for a local-only diagnostic and redaction is impossible.
+- Write with `agent-switch secret set --stdin NAME` (or `--fd N`), never as a command argument; read only via `agent-switch secret get --fd N NAME` into a non-TTY descriptor; list names with `agent-switch secret list`.
+- `{paths.config_file}` is the central tool and route config. Run `agent-switch doctor` before MCP/tool changes and `agent-switch reconcile` to regenerate native configs. Generated MCP entries stay in the `agent-*` namespace. A new provider gets only its secret name in config.
 
-Skill Hub rules:
-- Treat `{skill_hub}` as the optional local Skill control plane when it exists.
-- Use `{skillctl} status` to inspect Skill source and profile state.
-- Use `{skillctl} audit` for safe MCP / secret-name / Skill inventory reports; reports must list secret names only, never values.
-- A downloaded Skill is dormant by default. It must not become callable until the user explicitly enables it for a project profile or the `global` profile.
-- Use `{skillctl} profile-enable PROFILE SKILL --source SOURCE --path PATH` and `profile-disable PROFILE SKILL` to change per-project Skill activation.
-- Use `{skillctl} sync PROFILE --prune` to activate project-local Skills through `.agents/skills` plus Codex / Claude / Hermes bridge directories and remove stale generated symlinks.
-- Only when the user explicitly requests global activation, use `{skillctl} global-sync-official --prune` to refresh the global OpenAI official Skill baseline plus explicit `profiles/global.json` entries.
-- Keep third-party Skills in one checkout under Skill Hub `vendor/` and lock their commit or tag before syncing projects.
-- Keep self-authored Skills in Git-managed Skill Hub `own/` worktrees or dedicated GitHub repositories.
-- Treat `{global_skills}` as generated activation output, not as the warehouse. Do not copy dormant Skills there manually.
-- Do not run broad global installs such as `skills add ... -g --all` unless the user explicitly asks for global installation; prefer project profiles and symlinks.
-- If non-profile global Skills exist unexpectedly, use `{skillctl} global-sync-official --prune` to restore the managed baseline before continuing.
+Skill Hub (`{skill_hub}`):
+- Inspect with `{skillctl} status`; `{skillctl} audit` reports secret names only, never values.
+- A downloaded Skill is dormant by default until the user enables it for a project profile or the `global` profile: `profile-enable PROFILE SKILL --source SOURCE --path PATH` / `profile-disable PROFILE SKILL`, then `{skillctl} sync PROFILE --prune`.
+- Only on an explicit user request, `{skillctl} global-sync-official --prune` refreshes the global official baseline plus explicit `profiles/global.json` entries. If unexpected global Skills appear, report them without changing activation and do not block unrelated tasks.
+- Third-party Skills live once under `vendor/` with a locked commit; self-authored ones in Git-managed `own/` or their own repos. `{global_skills}` is generated output: never copy Skills there by hand. Do not run broad global installs such as `skills add ... -g --all` unless asked.
 - Never store credentials in Skill files, Skill references, Skill scripts, registry files, lock files, or audit reports.
 """
 
